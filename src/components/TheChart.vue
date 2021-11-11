@@ -35,6 +35,8 @@ export default {
       selectedData: {},
       dateHovered: null,
       data: {},
+      lastIntersectIndex: 0,
+      index: 0,
     };
   },
   methods: {
@@ -58,7 +60,7 @@ export default {
     initializeChart: function () {
       let _this = this;
       this.data = {};
-      this.data = this.dataToDisplay["waterData"];
+      this.data = [...this.dataToDisplay["waterData"]];
       this.data.sort(function (a, b) {
         var aSplit = _this.splitDateTime(a);
         var bSplit = _this.splitDateTime(b);
@@ -110,7 +112,7 @@ export default {
       if (this.svg === null) return;
       this.svg.append("g");
       //Display prediction lines
-      this.svg
+      let mainLine = this.svg
         .append("path")
         .data([this.data])
         .attr("class", "line")
@@ -118,6 +120,71 @@ export default {
         .style("stroke-width", 4)
         .style("stroke", "blue")
         .style("fill", "none");
+
+      //Add vertical line and threshold
+      let threshold = this.dataToDisplay.waterLevel;
+      this.svg
+        .append("line")
+        .attr("stroke", "#F00")
+        .attr("x1", 0)
+        .attr("y1", this.y(threshold))
+        .attr("x2", this.width)
+        .attr("y2", this.y(threshold))
+        .attr("class", "line");
+      var yLine = this.y(threshold);
+      console.log(yLine);
+      var node = mainLine.node();
+      var pathLength = node.getTotalLength();
+
+      this.lastIntersectIndex = 0;
+      for (var i = 0; i < pathLength; i++) {
+        var point = node.getPointAtLength(i);
+        if (Math.floor(point.y) === Math.floor(yLine)) {
+          this.findDateRelated(point.x);
+          this.svg
+            .append("circle")
+            .attr("cx", point.x)
+            .attr("cy", point.y)
+            .attr("r", 5)
+            .style("fill", "black");
+        }
+      }
+      // create last rectangle
+      this.index = this.dates.length-1;
+      this.createBackgroundRect();
+    },
+    findDateRelated: function (xValue) {
+      var x0 = this.x.invert(xValue);
+      this.index = d3.bisect(this.dates, x0);
+      this.createBackgroundRect();
+      this.lastIntersectIndex = this.index;
+    },
+    createBackgroundRect() {
+      const average = (array) => array.reduce((a, b) => a + b) / array.length;
+      let values = this.data
+        .slice(this.lastIntersectIndex, this.index)
+        .map((a) => a.value);
+
+      if (values.length < 2) return;
+      let color = null;
+      if (average(values) > this.dataToDisplay.waterLevel) {
+        color = "green";
+      } else {
+        color = "red";
+      }
+
+      d3.select("g")
+        .append("rect")
+        .attr("x", this.x(this.dates[this.lastIntersectIndex]))
+        .attr(
+          "width",
+          this.x(this.dates[this.index]) -
+            this.x(this.dates[this.lastIntersectIndex])
+        )
+        .attr("height", this.height)
+        .style("opacity", 0.3)
+        .attr("fill", color);
+      //.lower();
     },
     updateChart: function () {
       this.clearContent();

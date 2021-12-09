@@ -1,13 +1,15 @@
 <template>
   <div id="app">
     <TheControlPane @config="modifyData"></TheControlPane>
-    <TheChart id="waterLevelChart" :dataToDisplay="dataToDisplay" class="svg-container"></TheChart>
+    <TheChart :dataToDisplay="dataToDisplay" :range="range"></TheChart>
+    <TheLanguageButton></TheLanguageButton>
   </div>
 </template>
 
 <script>
 import TheControlPane from "./components/TheControlPane.vue";
 import TheChart from "./components/TheChart.vue";
+import TheLanguageButton from "./components/TheLanguageButton.vue";
 import axios from "axios";
 
 export default {
@@ -15,10 +17,12 @@ export default {
   components: {
     TheControlPane,
     TheChart,
+    TheLanguageButton
   },
 
   data() {
     return {
+      range : [],
       zeroLevelmeters: 2.1,
       waterLevelData: null,
       limitWaterLevel: 0,
@@ -54,6 +58,7 @@ export default {
     },
 
     modifyData: async function (config) {
+      this.range = [config.range.start,config.range.end]
       this.limitWaterLevel = config.draught + this.zeroLevelmeters;
       await this.downloadData(config);
       this.$set(this.dataToDisplay, "waterLevel", this.limitWaterLevel);

@@ -1,4 +1,7 @@
 {
   "draught": "draught",
-  "submit":"Submit"
+  "submit": "Submit",
+  "chartYLabel": "Water Level (m)",
+  "chart": "Chart",
+  "Calendrier": "Calendar"
 }

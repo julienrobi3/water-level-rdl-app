@@ -1,4 +1,7 @@
 {
-      "draught": "Tirant d'eau",
-      "submit":"Soumettre"
-    }
+  "draught": "Tirant d'eau",
+  "submit": "Soumettre",
+  "chartYLabel": "Hauteur d'eau (m)",
+  "chart": "Graphique",
+  "Calendrier": "Calendrier"
+}

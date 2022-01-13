@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath: "/water-level-rdl-app/",
   pluginOptions: {
     i18n: {
       locale: 'en',

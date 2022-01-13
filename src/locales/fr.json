@@ -4,5 +4,7 @@
   "chartYLabel": "Hauteur d'eau (m)",
   "chart": "Graphique",
   "Calendrier": "Calendrier",
-  "invalidRangeMessage": "La plage de date ne peut être supérieure à 6 jours. Elle a été modifiée automatiquement. "
+  "invalidRangeMessage": "La plage de date ne peut être supérieure à 6 jours. Elle a été modifiée automatiquement. ",
+  "boat-choice": "Emplacement de l'embarcation",
+  "visitor-dock": "Quai visiteur"
 }

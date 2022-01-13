@@ -4,5 +4,7 @@
   "chartYLabel": "Water Level (m)",
   "chart": "Chart",
   "Calendrier": "Calendar",
-  "invalidRangeMessage": "The range selected cannot be more than 6 days. It has been corrected automatically"
+  "invalidRangeMessage": "The range selected cannot be more than 6 days. It has been corrected automatically",
+  "boat-choice": "Boat destination",
+  "visitor-dock": "Visitor dock"
 }

@@ -6,13 +6,13 @@
     </div>
     <b-form-group
       class="destination-selector"
-      label="Emplacement de l'embarcation"
+      :label="$t('boat-choice')"
     >
       <b-form-radio v-model="destinationSelected" :value="marinaValue"
         >Marina</b-form-radio
       >
       <b-form-radio v-model="destinationSelected" :value="visitorValue"
-        >Quai visiteur</b-form-radio
+        >{{$t("visitor-dock")}}</b-form-radio
       >
     </b-form-group>
     <div class="date-selector">
@@ -92,10 +92,10 @@ export default {
       });
     },
   },
-  /*mounted() {
-    this.generateValidDates(new Date(), new Date());
+  mounted() {
+    this.handleInput()
   },
-  watch: {
+  /*watch: {
     range: function () {
       this.generateValidDates(this.range.start, this.range.end);
     },

@@ -144,7 +144,7 @@ export default {
         .append("svg")
         .attr("class", "svg-content-responsive")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 1000 550");
+        .attr("viewBox", "0 0 1000 600");
     },
     addPredictionLine() {
       this.svg.append("g");
@@ -236,16 +236,19 @@ export default {
           .attr("r", 5)
           .style("fill", "black");
 
+        let hours = this.intersectionPoints[i].x.getHours().toString()
+        let minutes = this.intersectionPoints[i].x.getMinutes().toString()
+        minutes = ('0'+minutes).slice(-2)
         this.svg
           .append("text")
           .style("opacity", 1)
           .style("fill", "black")
-          .style("font-size", "20px")
+          .style("font-size", "25px")
+          .attr("class", "levelValuesOnChart")
           .attr("x", this.x(this.intersectionPoints[i].x) + 10)
-          .attr("y", this.y(this.intersectionPoints[i].y) - 15)
-          .attr("text-anchor", "left")
-          .attr("alignment-baseline", "middle")
-          .text("test");
+          .attr("y", (this.intersectionPoints[i].y) - 5)
+          .attr("text-anchor", "right")
+          .text(hours+":"+minutes);
       }
       for (let i = 0; i < this.colorBoxes.length; i++) {
         d3.select("g")
@@ -322,12 +325,13 @@ export default {
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
         .attr("transform", "rotate(-65)")
-        .style("font-size", 20);
+        .style("font-size", 25);
 
       this.svg.selectAll(".line").remove();
       this.svg.selectAll(".rect").remove();
       this.svg.selectAll(".circle").remove();
-
+      this.svg.selectAll(".levelValuesOnChart").remove();
+      
       this.addPredictionLine();
       this.fillChart();
     },
@@ -347,7 +351,7 @@ export default {
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
         .attr("transform", "rotate(-65)")
-        .style("font-size", 20)
+        .style("font-size", 25)
         .style("stroke", "black")
         .selectAll("line")
         .style("stroke", "black")

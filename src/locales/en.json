@@ -3,5 +3,6 @@
   "submit": "Submit",
   "chartYLabel": "Water Level (m)",
   "chart": "Chart",
-  "Calendrier": "Calendar"
+  "Calendrier": "Calendar",
+  "invalidRangeMessage": "The range selected cannot be more than 6 days. It has been corrected automatically"
 }

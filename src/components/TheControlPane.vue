@@ -16,8 +16,9 @@
       >
     </b-form-group>
     <div class="date-selector">
-      <v-date-picker v-model="range" is-range />
+      <v-date-picker v-model="range" is-range @input="handleInput()" />
     </div>
+    <div class="warning-range" v-show="invalidRange">{{$t("invalidRangeMessage")}}</div>
     <b-button variant="outline-primary" @click="emitConfig">{{
       $t("submit")
     }}</b-button>
@@ -38,6 +39,7 @@ export default {
     let visitorValue = 1.1;
     let marinaValue = 2.1;
     return {
+      invalidRange:false,
       draught: 0,
       range: {
         start: new Date(),
@@ -61,32 +63,43 @@ export default {
       config["destination"] = parseFloat(this.destinationSelected);
       this.$emit("config", config);
     },
-    generateValidDates(start, end) {
-      let startDate;
-      let endDate;
-      if (!this.validRange) {
-        startDate = start;
-        endDate = new Date(end);
-        endDate.setDate(startDate.getDate() + 5);
-      } else {
-        startDate = this.range.start;
-        endDate = this.range.end;
-      }
-      startDate.setHours(0, 0, 0, 0);
-      endDate.setDate(endDate.getDate() + 1);
-      endDate.setHours(0, 0, 0, 0);
 
-      this.trimmedRange = { start: startDate, end: endDate };
+    handleInput() {
+      this.$nextTick(() => {
+        let endDate;
+        if (!this.validRange) {
+          endDate = new Date()
+          endDate.setDate(this.range.start.getDate() + 5)
+          this.range = {
+            start: this.range.start,
+            end: new Date(endDate),
+          };
+          this.invalidRange = true
+        } else {
+          this.range = {
+            start: this.range.start,
+            end: this.range.end,
+          };
+          endDate = new Date(this.range.end);
+          this.invalidRange = false
+        }
+
+        this.range.start.setHours(0, 0, 0, 0);
+        endDate.setDate(endDate.getDate() + 1);
+        endDate.setHours(0, 0, 0, 0);
+
+        this.trimmedRange = { start: this.range.start, end: endDate };
+      });
     },
   },
-  mounted(){
+  /*mounted() {
     this.generateValidDates(new Date(), new Date());
   },
   watch: {
     range: function () {
-      this.generateValidDates(this.range.start,this.range.end);
+      this.generateValidDates(this.range.start, this.range.end);
     },
-  },
+  },*/
 };
 </script>
 
@@ -97,5 +110,8 @@ export default {
   border-radius: 25px;
   width: 30%;
   margin: 0 auto;
+}
+.warning-range{
+  color:#d86c00
 }
 </style>

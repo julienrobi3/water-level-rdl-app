@@ -3,5 +3,6 @@
   "submit": "Soumettre",
   "chartYLabel": "Hauteur d'eau (m)",
   "chart": "Graphique",
-  "Calendrier": "Calendrier"
+  "Calendrier": "Calendrier",
+  "invalidRangeMessage": "La plage de date ne peut être supérieure à 6 jours. Elle a été modifiée automatiquement. "
 }

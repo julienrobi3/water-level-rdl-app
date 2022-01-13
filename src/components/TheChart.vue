@@ -235,6 +235,17 @@ export default {
           .attr("cy", this.intersectionPoints[i].y)
           .attr("r", 5)
           .style("fill", "black");
+
+        this.svg
+          .append("text")
+          .style("opacity", 1)
+          .style("fill", "black")
+          .style("font-size", "20px")
+          .attr("x", this.x(this.intersectionPoints[i].x) + 10)
+          .attr("y", this.y(this.intersectionPoints[i].y) - 15)
+          .attr("text-anchor", "left")
+          .attr("alignment-baseline", "middle")
+          .text("test");
       }
       for (let i = 0; i < this.colorBoxes.length; i++) {
         d3.select("g")

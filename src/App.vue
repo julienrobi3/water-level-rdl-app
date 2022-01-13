@@ -1,8 +1,17 @@
 <template>
   <div id="app">
-    <TheControlPane @config="modifyData"></TheControlPane>
-    <TheChart :dataToDisplay="dataToDisplay" :range="range"></TheChart>
     <TheLanguageButton></TheLanguageButton>
+    <div class="controlAndChart">
+      <TheControlPane
+        @config="modifyData"
+        class="controlPanel"
+      ></TheControlPane>
+      <TheChart
+        :dataToDisplay="dataToDisplay"
+        :range="range"
+        class="theChart"
+      ></TheChart>
+    </div>
   </div>
 </template>
 
@@ -17,13 +26,12 @@ export default {
   components: {
     TheControlPane,
     TheChart,
-    TheLanguageButton
+    TheLanguageButton,
   },
 
   data() {
     return {
-      range : [],
-      zeroLevelmeters: 2.1,
+      range: [],
       waterLevelData: null,
       limitWaterLevel: 0,
       dataToDisplay: {},
@@ -58,8 +66,8 @@ export default {
     },
 
     modifyData: async function (config) {
-      this.range = [config.range.start,config.range.end]
-      this.limitWaterLevel = config.draught + this.zeroLevelmeters;
+      this.range = [config.range.start, config.range.end];
+      this.limitWaterLevel = config.draught + config.destination;
       await this.downloadData(config);
       this.$set(this.dataToDisplay, "waterLevel", this.limitWaterLevel);
       this.$set(this.dataToDisplay, "waterData", this.waterLevelData);
@@ -87,5 +95,15 @@ export default {
   border-radius: 10px;
   border: 2px solid blue;
   margin: 4px;
+}
+.controlPanel {
+  width: 500px;
+}
+.controlAndChart {
+  display: flex;
+  flex-wrap: wrap;
+}
+.theChart {
+  width: 550px;
 }
 </style>

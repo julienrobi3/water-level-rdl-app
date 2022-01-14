@@ -4,24 +4,20 @@
       <div>{{ $t("draught") }} (m)</div>
       <input v-model.number="draught" type="number" />
     </div>
-    <b-form-group
-      class="destination-selector"
-      :label="$t('boat-choice')"
-    >
+    <b-form-group class="destination-selector" :label="$t('boat-choice')">
       <b-form-radio v-model="destinationSelected" :value="marinaValue"
         >Marina</b-form-radio
       >
-      <b-form-radio v-model="destinationSelected" :value="visitorValue"
-        >{{$t("visitor-dock")}}</b-form-radio
-      >
+      <b-form-radio v-model="destinationSelected" :value="visitorValue">{{
+        $t("visitor-dock")
+      }}</b-form-radio>
     </b-form-group>
     <div class="date-selector">
       <v-date-picker v-model="range" is-range @input="handleInput()" />
     </div>
-    <div class="warning-range" v-show="invalidRange">{{$t("invalidRangeMessage")}}</div>
-    <b-button variant="outline-primary" @click="emitConfig">{{
-      $t("submit")
-    }}</b-button>
+    <div class="warning-range" v-show="invalidRange">
+      {{ $t("invalidRangeMessage") }}
+    </div>
   </div>
 </template>
 
@@ -39,7 +35,7 @@ export default {
     let visitorValue = 1.1;
     let marinaValue = 2.1;
     return {
-      invalidRange:false,
+      invalidRange: false,
       draught: 0,
       range: {
         start: new Date(),
@@ -68,20 +64,20 @@ export default {
       this.$nextTick(() => {
         let endDate;
         if (!this.validRange) {
-          endDate = new Date()
-          endDate.setDate(this.range.start.getDate() + 5)
+          endDate = new Date();
+          endDate.setDate(this.range.start.getDate() + 5);
           this.range = {
             start: this.range.start,
             end: new Date(endDate),
           };
-          this.invalidRange = true
+          this.invalidRange = true;
         } else {
           this.range = {
             start: this.range.start,
             end: this.range.end,
           };
           endDate = new Date(this.range.end);
-          this.invalidRange = false
+          this.invalidRange = false;
         }
 
         this.range.start.setHours(0, 0, 0, 0);
@@ -93,13 +89,24 @@ export default {
     },
   },
   mounted() {
-    this.handleInput()
+    let _this = this
+    async function mount() {
+      await _this.handleInput();
+      _this.emitConfig();
+    }
+    mount()
   },
-  /*watch: {
-    range: function () {
-      this.generateValidDates(this.range.start, this.range.end);
+  watch: {
+    draught: function () {
+      this.emitConfig();
     },
-  },*/
+    trimmedRange: function () {
+      this.emitConfig();
+    },
+    destinationSelected: function () {
+      this.emitConfig();
+    },
+  },
 };
 </script>
 
@@ -111,7 +118,7 @@ export default {
   width: 30%;
   margin: 0 auto;
 }
-.warning-range{
-  color:#d86c00
+.warning-range {
+  color: #d86c00;
 }
 </style>

@@ -73,6 +73,11 @@ export default {
       this.$set(this.dataToDisplay, "waterData", this.waterLevelData);
     },
   },
+  watch:{
+    "range":function(){
+      console.log(this.range)
+    }
+  }
 };
 </script>
 

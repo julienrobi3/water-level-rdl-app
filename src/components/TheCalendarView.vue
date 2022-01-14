@@ -21,7 +21,6 @@ export default {
   props: ["colorBoxes", "range"],
   computed: {
     days() {
-      console.log("days");
       let dayList = this.getDates(
         new Date(this.range[0]),
         new Date(this.range[1])

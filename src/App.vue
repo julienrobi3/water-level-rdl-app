@@ -39,7 +39,8 @@ export default {
       waterLevelData: null,
       limitWaterLevel: 0,
       dataToDisplay: {},
-      type:0
+      type: 0,
+      changedRange: true,
     };
   },
   methods: {
@@ -70,27 +71,37 @@ export default {
       }
     },
     modifyData: function (config) {
+      if (
+        this.range[0] === config.range.start &&
+        this.range[1] === config.range.end
+      ) {
+        this.changedRange = false;
+      } else {
+        this.changedRange = true;
+      }
       this.range = [config.range.start, config.range.end];
-      this.draught = config.draught
-      this.destination = config.destination
-      this.specificWaterLevel = config.specificWaterLevel
-      this.checkType()
+      this.draught = config.draught;
+      this.destination = config.destination;
+      this.specificWaterLevel = config.specificWaterLevel;
+      this.checkType();
     },
-    changeType: function(type){
-      this.type = type
-      this.checkType()
+    changeType: function (type) {
+      this.type = type;
+      this.checkType();
     },
-    checkType: function(){
+    checkType: function () {
       if (this.type === 0) {
         this.limitWaterLevel = this.draught + this.destination;
       } else {
-        this.limitWaterLevel = this.specificWaterLevel
+        this.limitWaterLevel = this.specificWaterLevel;
       }
       this.downloadData();
     },
 
     downloadData: async function () {
-      await this.apiCall();
+      if (this.changedRange === true) {
+        await this.apiCall();
+      }
       this.$set(this.dataToDisplay, "waterLevel", this.limitWaterLevel);
       this.$set(this.dataToDisplay, "waterData", this.waterLevelData);
     },

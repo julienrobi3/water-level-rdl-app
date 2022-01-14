@@ -425,6 +425,9 @@ export default {
     "dataToDisplay.waterData": function () {
       this.updateChart();
     },
+    "dataToDisplay.waterLevel": function () {
+      this.updateChart();
+    },
   },
 };
 </script>

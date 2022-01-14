@@ -117,7 +117,6 @@ export default {
     let _this = this;
     async function mount() {
       await _this.handleInput();
-      _this.emitConfig();
     }
     mount();
   },
@@ -149,8 +148,8 @@ export default {
   width: 70%;
   margin: 0 auto;
 }
-.draught-selector{
-  margin:3px
+.draught-selector {
+  margin: 3px;
 }
 .warning-range {
   color: #d86c00;

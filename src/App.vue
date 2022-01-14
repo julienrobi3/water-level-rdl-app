@@ -4,6 +4,7 @@
     <div class="controlAndChart">
       <TheControlPane
         @config="modifyData"
+        @waterLevelType="changeType"
         class="controlPanel"
       ></TheControlPane>
       <TheChart
@@ -32,9 +33,13 @@ export default {
   data() {
     return {
       range: [],
+      draught: null,
+      destination: null,
+      specificWaterLevel: null,
       waterLevelData: null,
       limitWaterLevel: 0,
       dataToDisplay: {},
+      type:0
     };
   },
   methods: {
@@ -51,33 +56,45 @@ export default {
       var minute = String(date.getUTCMinutes()).padStart(2, "0");
       return this.date2string(year, month, day, hour, minute);
     },
-    downloadData: async function (config) {
+    apiCall: async function () {
       let _this = this;
       const result = await axios.get(
         "https://api.iwls.azure.cloud.dfo-mpo.gc.ca/api/v1/stations/5cebf1de3d0f4a073c4bbaf1/data?time-series-code=wlp&from=" +
-          _this.getDateValuesFromDate(config.range.start) +
+          _this.getDateValuesFromDate(_this.range[0]) +
           "&to=" +
-          _this.getDateValuesFromDate(config.range.end) +
+          _this.getDateValuesFromDate(_this.range[1]) +
           ""
       );
       if (result.status === 200) {
         this.waterLevelData = result.data;
       }
     },
-
-    modifyData: async function (config) {
+    modifyData: function (config) {
       this.range = [config.range.start, config.range.end];
-      this.limitWaterLevel = config.draught + config.destination;
-      await this.downloadData(config);
+      this.draught = config.draught
+      this.destination = config.destination
+      this.specificWaterLevel = config.specificWaterLevel
+      this.checkType()
+    },
+    changeType: function(type){
+      this.type = type
+      this.checkType()
+    },
+    checkType: function(){
+      if (this.type === 0) {
+        this.limitWaterLevel = this.draught + this.destination;
+      } else {
+        this.limitWaterLevel = this.specificWaterLevel
+      }
+      this.downloadData();
+    },
+
+    downloadData: async function () {
+      await this.apiCall();
       this.$set(this.dataToDisplay, "waterLevel", this.limitWaterLevel);
       this.$set(this.dataToDisplay, "waterData", this.waterLevelData);
     },
   },
-  watch:{
-    "range":function(){
-      console.log(this.range)
-    }
-  }
 };
 </script>
 

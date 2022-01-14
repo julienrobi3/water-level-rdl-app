@@ -1,17 +1,39 @@
 <template>
   <div>
-    <div class="draught-selector">
-      <div>{{ $t("draught") }} (m)</div>
-      <input v-model.number="draught" type="number" />
-    </div>
-    <b-form-group class="destination-selector" :label="$t('boat-choice')">
-      <b-form-radio v-model="destinationSelected" :value="marinaValue"
-        >Marina</b-form-radio
-      >
-      <b-form-radio v-model="destinationSelected" :value="visitorValue">{{
-        $t("visitor-dock")
-      }}</b-form-radio>
-    </b-form-group>
+    <b-card no-body>
+      <b-tabs v-model="tabIndex" small card>
+        <b-tab :title="$t('unknown_waterlevel')" active>
+          <b-card-text
+            ><div class="draught-selector">
+              <div>{{ $t("draught") }} (m)</div>
+              <input v-model.number="draught" type="number" />
+            </div>
+            <b-form-group
+              class="destination-selector"
+              :label="$t('boat-choice')"
+            >
+              <b-form-radio v-model="destinationSelected" :value="marinaValue"
+                >Marina</b-form-radio
+              >
+              <b-form-radio
+                v-model="destinationSelected"
+                :value="visitorValue"
+                >{{ $t("visitor-dock") }}</b-form-radio
+              >
+            </b-form-group></b-card-text
+          >
+        </b-tab>
+        <b-tab :title="$t('specific_waterlevel')">
+          <b-card-text class="specific-water-input-head"
+            ><input
+              class="specific-water-input"
+              v-model.number="specificWaterLevel"
+              type="number"
+          /></b-card-text>
+          <div class="specific-units">m</div>
+        </b-tab>
+      </b-tabs>
+    </b-card>
     <div class="date-selector">
       <v-date-picker v-model="range" is-range @input="handleInput()" />
     </div>
@@ -35,7 +57,9 @@ export default {
     let visitorValue = 1.1;
     let marinaValue = 2.1;
     return {
+      tabIndex: 0,
       invalidRange: false,
+      specificWaterLevel: 2,
       draught: 0,
       range: {
         start: new Date(),
@@ -57,6 +81,7 @@ export default {
       config["draught"] = this.draught;
       config["range"] = this.trimmedRange;
       config["destination"] = parseFloat(this.destinationSelected);
+      config["specificWaterLevel"] = this.specificWaterLevel;
       this.$emit("config", config);
     },
 
@@ -89,12 +114,12 @@ export default {
     },
   },
   mounted() {
-    let _this = this
+    let _this = this;
     async function mount() {
       await _this.handleInput();
       _this.emitConfig();
     }
-    mount()
+    mount();
   },
   watch: {
     draught: function () {
@@ -105,6 +130,12 @@ export default {
     },
     destinationSelected: function () {
       this.emitConfig();
+    },
+    specificWaterLevel: function () {
+      this.emitConfig();
+    },
+    tabIndex: function () {
+      this.$emit("waterLevelType", this.tabIndex);
     },
   },
 };
@@ -120,5 +151,16 @@ export default {
 }
 .warning-range {
   color: #d86c00;
+}
+
+.specific-water-input-head {
+  display: inline-block;
+}
+.specific-water-input {
+  width: 50px;
+  margin: 2px;
+}
+.specific-units {
+  display: inline-block;
 }
 </style>

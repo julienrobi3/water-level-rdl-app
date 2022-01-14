@@ -146,8 +146,11 @@ export default {
   border: 2px solid blue;
   padding: 10px;
   border-radius: 25px;
-  width: 30%;
+  width: 70%;
   margin: 0 auto;
+}
+.draught-selector{
+  margin:3px
 }
 .warning-range {
   color: #d86c00;
@@ -162,5 +165,9 @@ export default {
 }
 .specific-units {
   display: inline-block;
+}
+.card {
+  width: 450px;
+  margin: 0 auto;
 }
 </style>

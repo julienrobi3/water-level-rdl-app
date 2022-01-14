@@ -169,4 +169,12 @@ export default {
   width: 450px;
   margin: 0 auto;
 }
+@media (max-width: 450px) {
+  .nav-item {
+    width: 150px;
+  }
+  .card {
+    width: 350px;
+  }
+}
 </style>

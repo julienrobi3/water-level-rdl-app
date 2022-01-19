@@ -7,18 +7,18 @@
         @waterLevelType="changeType"
         class="controlPanel"
       ></TheControlPane>
-      <TheChart
+      <TheChartAndOptions
         :dataToDisplay="dataToDisplay"
         :range="range"
         class="theChart"
-      ></TheChart>
+      ></TheChartAndOptions>
     </div>
   </div>
 </template>
 
 <script>
 import TheControlPane from "./components/TheControlPane.vue";
-import TheChart from "./components/TheChart.vue";
+import TheChartAndOptions from "./components/TheChartAndOptions.vue";
 import TheLanguageButton from "./components/TheLanguageButton.vue";
 import axios from "axios";
 
@@ -26,7 +26,7 @@ export default {
   name: "App",
   components: {
     TheControlPane,
-    TheChart,
+    TheChartAndOptions,
     TheLanguageButton,
   },
 
@@ -125,8 +125,6 @@ export default {
   height: 100%;
   vertical-align: top;
   max-width: 700px;
-  border-radius: 10px;
-  border: 2px solid blue;
   margin: 4px;
 }
 .controlPanel {

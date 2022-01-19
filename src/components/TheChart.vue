@@ -1,32 +1,11 @@
 <template>
-  <div>
-    <div class="viewChoice">
-      <b-button variant="primary" @click="view = 'chart'">{{
-        $t("chart")
-      }}</b-button>
-      <b-button variant="primary" @click="view = 'calendar'">{{
-        $t("Calendrier")
-      }}</b-button>
-    </div>
-    <div
-      v-show="view === 'chart'"
-      id="waterLevelChart"
-      class="svg-container"
-    ></div>
-    <TheCalendarView
-      v-show="view === 'calendar'"
-      :colorBoxes="colorBoxes"
-      :range="range"
-    ></TheCalendarView>
-  </div>
+  <div></div>
 </template>
 
 <script>
 import * as d3 from "d3";
-import TheCalendarView from "@/components/TheCalendarView.vue";
 export default {
-  components: { TheCalendarView },
-  props: ["dataToDisplay", "range"],
+  props: ["dataToDisplay", "range", "bus"],
   data() {
     var _this = this;
     var line = d3
@@ -39,6 +18,7 @@ export default {
       });
     return {
       view: "chart",
+      startDisplayedDate: null,
       line,
       rect: null,
       width: 1000,
@@ -213,6 +193,7 @@ export default {
           color: color,
         });
       }
+      this.$emit("colorBoxChanged", this.colorBoxes);
     },
     fillChart: function () {
       //Add vertical line and threshold
@@ -236,9 +217,9 @@ export default {
           .attr("r", 5)
           .style("fill", "black");
 
-        let hours = this.intersectionPoints[i].x.getHours().toString()
-        let minutes = this.intersectionPoints[i].x.getMinutes().toString()
-        minutes = ('0'+minutes).slice(-2)
+        let hours = this.intersectionPoints[i].x.getHours().toString();
+        let minutes = this.intersectionPoints[i].x.getMinutes().toString();
+        minutes = ("0" + minutes).slice(-2);
         this.svg
           .append("text")
           .style("opacity", 1)
@@ -246,9 +227,9 @@ export default {
           .style("font-size", "25px")
           .attr("class", "levelValuesOnChart")
           .attr("x", this.x(this.intersectionPoints[i].x) + 10)
-          .attr("y", (this.intersectionPoints[i].y) - 5)
+          .attr("y", this.intersectionPoints[i].y - 5)
           .attr("text-anchor", "right")
-          .text(hours+":"+minutes);
+          .text(hours + ":" + minutes);
       }
       for (let i = 0; i < this.colorBoxes.length; i++) {
         d3.select("g")
@@ -314,7 +295,10 @@ export default {
 
       this.dateMinDisplayed.setTime(this.dateMinDisplayed.getTime() + diff);
       this.dateMaxDisplayed.setTime(this.dateMaxDisplayed.getTime() + diff);
-
+      this.$emit("draggedDate", this.dateMinDisplayed);
+      this.resetChart();
+    },
+    resetChart: function () {
       this.setXDomain();
 
       this.svg
@@ -331,7 +315,7 @@ export default {
       this.svg.selectAll(".rect").remove();
       this.svg.selectAll(".circle").remove();
       this.svg.selectAll(".levelValuesOnChart").remove();
-      
+
       this.addPredictionLine();
       this.fillChart();
     },
@@ -420,6 +404,44 @@ export default {
       this.setAxis();
       this.addInteractions();
     },
+    changeStartDate: function () {
+      let _this = this;
+      //let nbOfMilliSeconds = 86400000;
+      let diff =
+        this.startDisplayedDate.getTime() - this.dateMinDisplayed.getTime();
+
+      let nbRep = 20;
+      if (Math.abs(diff) > 250000000) {
+        nbRep = 50;
+      }
+
+      let round = 0;
+      function transitionChart() {
+        modifyChart();
+        round++;
+        if (round < nbRep) {
+          setTimeout(transitionChart, 15);
+        }
+      }
+      transitionChart();
+
+      function modifyChart() {
+        _this.dateMinDisplayed.setTime(
+          _this.dateMinDisplayed.getTime() + diff / nbRep
+        );
+        _this.dateMaxDisplayed.setTime(
+          _this.dateMaxDisplayed.getTime() + diff / nbRep
+        );
+
+        _this.resetChart();
+      }
+    },
+  },
+  mounted() {
+    this.bus.$on("dateClicked", (date) => {
+      this.startDisplayedDate = date;
+      this.changeStartDate();
+    });
   },
   watch: {
     "dataToDisplay.waterData": function () {

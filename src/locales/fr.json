@@ -8,5 +8,8 @@
   "boat-choice": "Emplacement de l'embarcation",
   "visitor-dock": "Quai visiteur",
   "unknown_waterlevel": "Niveau d'eau requis inconnu",
-  "specific_waterlevel": "Niveau d'eau spécifique"
+  "specific_waterlevel": "Niveau d'eau spécifique",
+  "units": "Unités",
+  "meters": "Mètre",
+  "feet": "Pied"
 }

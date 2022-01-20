@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TheLanguageButton></TheLanguageButton>
+    <TheGeneralSettingsPane></TheGeneralSettingsPane>
     <div class="controlAndChart">
       <TheControlPane
         @config="modifyData"
@@ -19,7 +19,7 @@
 <script>
 import TheControlPane from "./components/TheControlPane.vue";
 import TheChartAndOptions from "./components/TheChartAndOptions.vue";
-import TheLanguageButton from "./components/TheLanguageButton.vue";
+import TheGeneralSettingsPane from "./components/TheGeneralSettingsPane.vue";
 import axios from "axios";
 
 export default {
@@ -27,7 +27,7 @@ export default {
   components: {
     TheControlPane,
     TheChartAndOptions,
-    TheLanguageButton,
+    TheGeneralSettingsPane,
   },
 
   data() {

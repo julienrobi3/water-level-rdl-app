@@ -8,5 +8,8 @@
   "boat-choice": "Boat destination",
   "visitor-dock": "Visitor dock",
   "unknown_waterlevel": "Unknown water level required",
-  "specific_waterlevel": "Specific water level"
+  "specific_waterlevel": "Specific water level",
+  "units": "Units",
+  "meters": "Meter",
+  "feet": "Foot"
 }

@@ -121,7 +121,7 @@ export default {
 .svg-container {
   display: inline-block;
   position: relative;
-  width: 100%; /* aspect ratio */
+  width: 98%; /* aspect ratio */
   height: 100%;
   vertical-align: top;
   max-width: 700px;

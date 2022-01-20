@@ -18,13 +18,20 @@
         :range="range"
         :bus="bus"
       ></TheChart>
-      <div
-        v-for="index in daysArray.length"
-        :key="index"
-        class="dot"
-        :class="{ active: activeIndex === index }"
-        @click="logClick(index)"
-      ></div>
+      <div class="dot-wrapper">
+        <div
+          v-for="index in daysArray.length"
+          :key="index"
+          @click="logClick(index)"
+          class="dot-date"
+        >
+          <div class="dot" :class="{ active: activeIndex === index }"></div>
+          <div v-show="activeIndex === index">
+            <div>{{ getDay(daysArray[index - 1]) }}</div>
+            <div>{{ getDate(daysArray[index - 1]) }}</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <TheCalendarView
@@ -39,6 +46,7 @@
 import Vue from "vue";
 import TheCalendarView from "@/components/TheCalendarView.vue";
 import TheChart from "@/components/TheChart.vue";
+import { days, months } from "@/common/time-utils";
 export default {
   components: { TheCalendarView, TheChart },
   props: ["dataToDisplay", "range"],
@@ -53,6 +61,14 @@ export default {
     };
   },
   methods: {
+    getDay: function (date) {
+      return days[this.$i18n.locale][date.getDay()];
+    },
+    getDate: function (date) {
+      let month = months[this.$i18n.locale][date.getMonth()];
+      let day = date.getDate();
+      return day + " " + month;
+    },
     loadColorBoxes: function (colorBoxes) {
       this.colorBoxes = colorBoxes;
     },
@@ -100,7 +116,16 @@ export default {
     },
   },
   watch: {
-    range: function () {
+    range: function (newValue, oldValue) {
+      if (oldValue.length === 0) {
+        return;
+      }
+      if (
+        newValue[0].getTime() === oldValue[0].getTime() &&
+        newValue[1].getTime() === oldValue[1].getTime()
+      ) {
+        return;
+      }
       this.updateDots();
     },
   },
@@ -113,8 +138,8 @@ export default {
   border: 2px solid blue;
 }
 .dot {
-  height: 25px;
-  width: 25px;
+  height: 15px;
+  width: 15px;
   background-color: #bbb;
   border-radius: 50%;
   display: inline-block;
@@ -122,12 +147,37 @@ export default {
   cursor: pointer;
 }
 .dot:hover {
-  height: 30px;
-  width: 30px;
+  height: 20px;
+  width: 20px;
 }
 .dot.active {
-  height: 30px;
-  width: 30px;
+  height: 20px;
+  width: 20px;
   background-color: black;
+}
+.dot-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  width: 100%;
+}
+.dot-date {
+  width: 50px;
+  line-height: 90%;
+}
+
+@media (max-width: 450px) {
+  .dot-date {
+    width: 45px;
+    font-size: small;
+  }
+  .dot:hover {
+    height: 15px;
+    width: 15px;
+  }
+  .dot.active {
+    height: 15px;
+    width: 15px;
+  }
 }
 </style>

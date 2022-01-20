@@ -17,6 +17,50 @@ export default {
         return _this.y(d.value);
       });
     return {
+      fr_FR: {
+        dateTime: "%a %e %b %Y %X",
+        date: "%Y-%m-%d",
+        time: "%H:%M:%S",
+        periods: ["", ""],
+        days: [
+          "dimanche",
+          "lundi",
+          "mardi",
+          "mercredi",
+          "jeudi",
+          "vendredi",
+          "samedi",
+        ],
+        shortDays: ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"],
+        months: [
+          "janvier",
+          "février",
+          "mars",
+          "avril",
+          "mai",
+          "juin",
+          "juillet",
+          "août",
+          "septembre",
+          "octobre",
+          "novembre",
+          "décembre",
+        ],
+        shortMonths: [
+          "jan",
+          "fév",
+          "mar",
+          "avr",
+          "mai",
+          "jui",
+          "jul",
+          "aoû",
+          "sep",
+          "oct",
+          "nov",
+          "déc",
+        ],
+      },
       view: "chart",
       startDisplayedDate: null,
       line,
@@ -70,6 +114,7 @@ export default {
     },
     initializeChart: function () {
       let _this = this;
+      d3.timeFormatDefaultLocale(this.fr_FR)
       this.data = [];
       this.data = [...this.dataToDisplay["waterData"]];
       this.data.sort(function (a, b) {
@@ -124,7 +169,7 @@ export default {
         .append("svg")
         .attr("class", "svg-content-responsive")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 1000 600");
+        .attr("viewBox", "0 0 1000 500");
     },
     addPredictionLine() {
       this.svg.append("g");
@@ -305,11 +350,12 @@ export default {
         .select(".xaxis")
         .call(this.xAxis)
         .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)")
-        .style("font-size", 25);
+        .style("font-size", 22)
+        .style("stroke", "black")
+        .selectAll("line")
+        .style("stroke", "black")
+        .selectAll("path")
+        .style("stroke", "black");
 
       this.svg.selectAll(".line").remove();
       this.svg.selectAll(".rect").remove();
@@ -323,7 +369,7 @@ export default {
     setAxis: function () {
       //configure xaxis
       const xAxisPosition = this.height - this.margin.bottom;
-      const format = d3.timeFormat("%m-%d %Hh");
+      const format = d3.timeFormat("%a %Hh");
       this.xAxis = d3.axisBottom(this.x).ticks(10).tickFormat(format);
       this.svg
         .append("g")
@@ -331,11 +377,7 @@ export default {
         .attr("transform", "translate(0," + xAxisPosition + ")")
         .call(this.xAxis)
         .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)")
-        .style("font-size", 25)
+        .style("font-size", 22)
         .style("stroke", "black")
         .selectAll("line")
         .style("stroke", "black")

@@ -90,6 +90,7 @@ export default {
         let endDate;
         if (!this.validRange) {
           endDate = new Date();
+          endDate.setMonth(this.range.start.getMonth());
           endDate.setDate(this.range.start.getDate() + 5);
           this.range = {
             start: this.range.start,

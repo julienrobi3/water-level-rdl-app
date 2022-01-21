@@ -21,6 +21,7 @@ import TheControlPane from "./components/TheControlPane.vue";
 import TheChartAndOptions from "./components/TheChartAndOptions.vue";
 import TheGeneralSettingsPane from "./components/TheGeneralSettingsPane.vue";
 import axios from "axios";
+import { conversionFunctions } from "@/common/units-utils";
 
 export default {
   name: "App",
@@ -101,7 +102,24 @@ export default {
     downloadData: async function () {
       if (this.changedRange === true) {
         await this.apiCall();
+        if (this.$store.state.units != "meter") {
+          this.changeDataUnits(this.$store.state.units);
+        }
       }
+      this.$set(this.dataToDisplay, "waterLevel", this.limitWaterLevel);
+      this.$set(this.dataToDisplay, "waterData", this.waterLevelData);
+    },
+    changeDataUnits: function (units) {
+      for (let i = 0; i < this.waterLevelData.length; i++) {
+        this.waterLevelData[i].value = conversionFunctions[units](
+          this.waterLevelData[i].value
+        );
+      }
+    },
+  },
+  watch: {
+    "$store.state.units": function (newValue) {
+      this.changeDataUnits(newValue);
       this.$set(this.dataToDisplay, "waterLevel", this.limitWaterLevel);
       this.$set(this.dataToDisplay, "waterData", this.waterLevelData);
     },
@@ -129,6 +147,11 @@ export default {
 }
 .controlPanel {
   width: 500px;
+}
+.general-settings {
+  width: 500px;
+  display:flex;
+  justify-content:center;
 }
 .controlAndChart {
   display: flex;

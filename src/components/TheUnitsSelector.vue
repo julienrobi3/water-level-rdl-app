@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="unit-selector">
     <b-card-text>
       <b-form-group class="units-radio-selector" :label="$t('units')">
         <b-form-radio v-model="unitsSelected" value="meter">{{
@@ -28,4 +28,7 @@ export default {
 </script>
 
 <style>
+.unit-selector {
+  margin: 10px;
+}
 </style>

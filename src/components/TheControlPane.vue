@@ -5,19 +5,27 @@
         <b-tab :title="$t('unknown_waterlevel')" active>
           <b-card-text
             ><div class="draught-selector">
-              <div>{{ $t("draught") }} (m)</div>
-              <input v-model.number="draught" type="number" />
+              <div>{{ $t("draught") }} ({{ $t($store.state.units) }})</div>
+              <input
+                v-model.number="draught"
+                type="number"
+                v-on:input="emitConfig"
+              />
             </div>
             <b-form-group
               class="destination-selector"
               :label="$t('boat-choice')"
             >
-              <b-form-radio v-model="destinationSelected" :value="marinaValue"
+              <b-form-radio
+                v-model="destinationSelected"
+                :value="marinaValue"
+                v-on:change="emitConfig"
                 >Marina</b-form-radio
               >
               <b-form-radio
                 v-model="destinationSelected"
                 :value="visitorValue"
+                v-on:change="emitConfig"
                 >{{ $t("visitor-dock") }}</b-form-radio
               >
             </b-form-group></b-card-text
@@ -29,8 +37,9 @@
               class="specific-water-input"
               v-model.number="specificWaterLevel"
               type="number"
+              v-on:input="emitConfig"
           /></b-card-text>
-          <div class="specific-units">m</div>
+          <div class="specific-units">{{ $t($store.state.units) }}</div>
         </b-tab>
       </b-tabs>
     </b-card>
@@ -44,6 +53,7 @@
 </template>
 
 <script>
+import { conversionFunctions } from "@/common/units-utils";
 export default {
   computed: {
     validRange() {
@@ -52,10 +62,25 @@ export default {
       }
       return true;
     },
+    visitorValue() {
+      return this.visitorValues[this.$store.state.units];
+    },
+    marinaValue() {
+      return this.marinaValues[this.$store.state.units];
+    },
   },
   data() {
-    let visitorValue = 1.1;
-    let marinaValue = 2.1;
+    let meterVisitorValue = 1.1;
+    let meterMarinaValue = 2.1;
+    let visitorValues = {
+      meter: meterVisitorValue,
+      foot: conversionFunctions.foot(meterVisitorValue),
+    };
+    let marinaValues = {
+      meter: meterMarinaValue,
+      foot: conversionFunctions.foot(meterMarinaValue),
+    };
+
     return {
       tabIndex: 0,
       invalidRange: false,
@@ -66,9 +91,9 @@ export default {
         end: new Date(),
       },
       trimmedRange: { start: null, end: null },
-      marinaValue,
-      visitorValue,
-      destinationSelected: marinaValue,
+      marinaValues,
+      visitorValues,
+      destinationSelected: marinaValues[this.$store.state.units],
     };
   },
   methods: {
@@ -122,20 +147,22 @@ export default {
     mount();
   },
   watch: {
-    draught: function () {
-      this.emitConfig();
-    },
     trimmedRange: function () {
-      this.emitConfig();
-    },
-    destinationSelected: function () {
-      this.emitConfig();
-    },
-    specificWaterLevel: function () {
       this.emitConfig();
     },
     tabIndex: function () {
       this.$emit("waterLevelType", this.tabIndex);
+    },
+    "$store.state.units": function (newValue) {
+      this.draught = conversionFunctions[newValue](this.draught);
+      this.specificWaterLevel = conversionFunctions[newValue](
+        this.specificWaterLevel
+      );
+      this.destinationSelected = conversionFunctions[newValue](
+        this.destinationSelected
+      );
+
+      this.emitConfig();
     },
   },
 };
@@ -160,7 +187,7 @@ export default {
   display: inline-block;
 }
 .specific-water-input {
-  width: 50px;
+  width: 70px;
   margin: 2px;
 }
 .specific-units {

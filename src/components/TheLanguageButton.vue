@@ -29,5 +29,6 @@ export default {
   flex-wrap: wrap;
   cursor: pointer;
   width: 60px;
+  margin:10px
 }
 </style>

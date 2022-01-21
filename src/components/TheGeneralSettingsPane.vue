@@ -14,7 +14,5 @@ export default {
 </script>
 
 <style>
-.general-settings {
-  width: 200px;
-}
+
 </style>

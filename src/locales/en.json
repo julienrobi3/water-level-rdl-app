@@ -11,5 +11,7 @@
   "specific_waterlevel": "Specific water level",
   "units": "Units",
   "meters": "Meter",
-  "feet": "Foot"
+  "feet": "Foot",
+  "meter": "meter",
+  "foot": "foot"
 }

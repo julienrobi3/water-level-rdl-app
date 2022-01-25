@@ -9,8 +9,8 @@ const units = {
   },
 };
 const unitsShort = {
-  feet: {
-    fr: "'",
+  foot: {
+    fr: "pied",
     en: "ft",
   },
   meter: {
@@ -27,4 +27,4 @@ let conversionFunctions = {
   },
 };
 
-export { conversionFunctions};
+export { conversionFunctions, unitsShort};

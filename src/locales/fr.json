@@ -1,7 +1,7 @@
 {
   "draught": "Tirant d'eau",
   "submit": "Soumettre",
-  "chartYLabel": "Hauteur d'eau (m)",
+  "chartYLabel": "Hauteur d'eau",
   "chart": "Graphique",
   "Calendrier": "Calendrier",
   "invalidRangeMessage": "La plage de date ne peut être supérieure à 6 jours. Elle a été modifiée automatiquement. ",

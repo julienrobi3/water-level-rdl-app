@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import { unitsShort } from "@/common/units-utils";
+import { fr_FR, en_EN } from "@/common/time-utils";
 import * as d3 from "d3";
 export default {
   props: ["dataToDisplay", "range", "bus"],
@@ -17,50 +19,7 @@ export default {
         return _this.y(d.value);
       });
     return {
-      fr_FR: {
-        dateTime: "%a %e %b %Y %X",
-        date: "%Y-%m-%d",
-        time: "%H:%M:%S",
-        periods: ["", ""],
-        days: [
-          "dimanche",
-          "lundi",
-          "mardi",
-          "mercredi",
-          "jeudi",
-          "vendredi",
-          "samedi",
-        ],
-        shortDays: ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"],
-        months: [
-          "janvier",
-          "février",
-          "mars",
-          "avril",
-          "mai",
-          "juin",
-          "juillet",
-          "août",
-          "septembre",
-          "octobre",
-          "novembre",
-          "décembre",
-        ],
-        shortMonths: [
-          "jan",
-          "fév",
-          "mar",
-          "avr",
-          "mai",
-          "jui",
-          "jul",
-          "aoû",
-          "sep",
-          "oct",
-          "nov",
-          "déc",
-        ],
-      },
+      localeChosen: null,
       view: "chart",
       startDisplayedDate: null,
       line,
@@ -114,7 +73,10 @@ export default {
     },
     initializeChart: function () {
       let _this = this;
-      d3.timeFormatDefaultLocale(this.fr_FR)
+      if (this.localeChosen != null) {
+        d3.timeFormatDefaultLocale(this.localeChosen);
+      }
+
       this.data = [];
       this.data = [...this.dataToDisplay["waterData"]];
       this.data.sort(function (a, b) {
@@ -408,7 +370,11 @@ export default {
         .attr("dy", "1em")
         .attr("id", "yLabel")
         .style("text-anchor", "middle")
-        .text(this.$t("chartYLabel"))
+        .text(
+          `${this.$t("chartYLabel")} (${
+            unitsShort[this.$store.state.units][this.$i18n.locale]
+          })`
+        )
         .style("font-size", 30);
     },
     setXDomain: function () {
@@ -490,6 +456,14 @@ export default {
       this.updateChart();
     },
     "dataToDisplay.waterLevel": function () {
+      this.updateChart();
+    },
+    "$i18n.locale": function () {
+      if (this.$i18n.locale === "fr") {
+        this.localeChosen = fr_FR;
+      } else {
+        this.localeChosen = en_EN;
+      }
       this.updateChart();
     },
   },

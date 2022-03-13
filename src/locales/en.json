@@ -13,5 +13,9 @@
   "meters": "Meter",
   "feet": "Foot",
   "meter": "meter",
-  "foot": "foot"
+  "foot": "foot",
+  "calendar-title": "To select another date or dates, please click on the calendar",
+  "calendar-usage-title": "How to use the calendar?",
+  "calendar-explanation": "With this calendar, you can either select one or several dates.\nTo select only one date, please click twice on the same date.\nTo select multiple dates, click on the starting date and then click on the ending date. Please note that it is not posible to select more than 6 days at a time. ",
+  "calendar": "Calendar"
 }

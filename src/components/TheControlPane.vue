@@ -1,5 +1,24 @@
 <template>
   <div>
+    <div class="calendar-title">{{ $t("calendar-title") }}</div>
+    <div class="dates-chosen-and-calendar">
+      <span class="dates-chosen">{{ datesDisplayed }}</span>
+      <img id="calendar-popup" :src="require('@/assets/calendar-icon.svg')" />
+    </div>
+
+    <b-popover
+      target="calendar-popup"
+      :title="$t('calendar')"
+      triggers="hover focus"
+    >
+      <div class="date-selector">
+        <v-date-picker v-model="range" is-range @input="handleInput()" />
+      </div>
+      <div>{{ $t("calendar-explanation") }}</div>
+      <div class="warning-range" v-show="invalidRange">
+        {{ $t("invalidRangeMessage") }}
+      </div>
+    </b-popover>
     <b-card no-body>
       <b-tabs v-model="tabIndex" small card>
         <b-tab :title="$t('unknown_waterlevel')" active>
@@ -43,19 +62,29 @@
         </b-tab>
       </b-tabs>
     </b-card>
-    <div class="date-selector">
-      <v-date-picker v-model="range" is-range @input="handleInput()" />
-    </div>
-    <div class="warning-range" v-show="invalidRange">
-      {{ $t("invalidRangeMessage") }}
-    </div>
   </div>
 </template>
 
 <script>
 import { conversionFunctions } from "@/common/units-utils";
+import { days } from "@/common/time-utils";
+import {
+  formatDateToDisplay,
+  formatTimeToDisplay,
+} from "@/common/timeRelatedFunctions";
 export default {
   computed: {
+    datesDisplayed() {
+      let start = formatDateToDisplay(
+        this.range.start,
+        days[this.$i18n.locale]
+      );
+      let end = formatDateToDisplay(this.range.end, days[this.$i18n.locale]);
+      if (start === end) {
+        return start;
+      }
+      return `${start} - ${end}`;
+    },
     validRange() {
       if (this.calculateDiffDays(this.range.start, this.range.end) > 6) {
         return false;
@@ -169,6 +198,19 @@ export default {
 </script>
 
 <style>
+.vc-container {
+  border: none !important;
+}
+.dates-chosen-and-calendar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popover-header {
+  background-color: #3182ce !important;
+  color: white !important;
+}
 .destination-selector {
   border: 2px solid blue;
   padding: 10px;
@@ -196,6 +238,19 @@ export default {
 .card {
   width: 450px;
   margin: 0 auto;
+}
+.calendar-title {
+  margin: 5px;
+  display: inline-block;
+}
+.calendar-info-icon {
+  width: 20px;
+  display: inline-block;
+}
+#calendar-popup {
+  padding: 15px;
+  width: 60px;
+  cursor:pointer;
 }
 @media (max-width: 450px) {
   .nav-item {

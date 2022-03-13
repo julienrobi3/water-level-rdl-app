@@ -146,7 +146,7 @@ export default {
   margin: 4px;
 }
 .controlPanel {
-  width: 500px;
+  width: 700px;
 }
 .general-settings {
   width: 500px;

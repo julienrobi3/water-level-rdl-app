@@ -13,5 +13,9 @@
   "meters": "Mètre",
   "feet": "Pied",
   "meter": "mètre",
-  "foot": "pied"
+  "foot": "pied",
+  "calendar-title": "Pour sélectionner une autre date ou groupe de date, veuillez cliquer sur le calendrier",
+  "calendar-usage-title": "Comment utiliser le calendrier?",
+  "calendar-explanation": "Avec ce calendrier, vous pouvez sélectionner une ou plusieurs dates.\nPous sélectionner une date, veuiller cliquer à deux reprises sur la même date.\nPour sélectionner plus d'une date, veuillez cliquer sur la date de départ puis sur la date de fin. \nÀ noter qu'il n'est pas possible de sélectionner plus de 6 jours à la fois.",
+  "calendar": "Calendrier"
 }

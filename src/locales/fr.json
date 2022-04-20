@@ -1,11 +1,11 @@
 {
-  "draught": "Tirant d'eau",
+  "draught": "Tirant d'eau: ",
   "submit": "Soumettre",
   "chartYLabel": "Hauteur d'eau",
   "chart": "Graphique",
   "Calendrier": "Calendrier",
   "invalidRangeMessage": "La plage de date ne peut être supérieure à 6 jours. Elle a été modifiée automatiquement. ",
-  "boat-choice": "Emplacement de l'embarcation",
+  "boat-choice": "Emplacement de l'embarcation:",
   "visitor-dock": "Quai visiteur",
   "unknown_waterlevel": "Niveau d'eau requis inconnu",
   "specific_waterlevel": "Niveau d'eau spécifique",
@@ -17,5 +17,7 @@
   "calendar-title": "Pour sélectionner une autre date ou groupe de date, veuillez cliquer sur le calendrier",
   "calendar-usage-title": "Comment utiliser le calendrier?",
   "calendar-explanation": "Avec ce calendrier, vous pouvez sélectionner une ou plusieurs dates.\nPous sélectionner une date, veuiller cliquer à deux reprises sur la même date.\nPour sélectionner plus d'une date, veuillez cliquer sur la date de départ puis sur la date de fin. \nÀ noter qu'il n'est pas possible de sélectionner plus de 6 jours à la fois.",
-  "calendar": "Calendrier"
+  "calendar": "Calendrier",
+  "calendar-view-title": "Horaires possibles pour l'entrée ou sortie",
+  "app-title": "Prédiction des niveaux d'eau - Marina de Rivière-du-Loup"
 }

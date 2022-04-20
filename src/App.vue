@@ -1,25 +1,31 @@
 <template>
   <div id="app">
-    <TheGeneralSettingsPane></TheGeneralSettingsPane>
-    <div class="controlAndChart">
-      <TheControlPane
-        @config="modifyData"
-        @waterLevelType="changeType"
-        class="controlPanel"
-      ></TheControlPane>
-      <TheChartAndOptions
-        :dataToDisplay="dataToDisplay"
-        :range="range"
-        class="theChart"
-      ></TheChartAndOptions>
+    <div class="app-header">
+      <div class="app-title">{{ $t("app-title") }}</div>
+      <TheLanguageButton></TheLanguageButton>
     </div>
+    <div class="the-app-core">
+      <div class="controlAndChart">
+        <TheControlPane
+          @config="modifyData"
+          @waterLevelType="changeType"
+          class="controlPanel"
+        ></TheControlPane>
+        <TheChartAndOptions
+          :dataToDisplay="dataToDisplay"
+          :range="range"
+          class="theChart"
+        ></TheChartAndOptions>
+      </div>
+    </div>
+    <div class="app-footer"></div>
   </div>
 </template>
 
 <script>
 import TheControlPane from "./components/TheControlPane.vue";
 import TheChartAndOptions from "./components/TheChartAndOptions.vue";
-import TheGeneralSettingsPane from "./components/TheGeneralSettingsPane.vue";
+import TheLanguageButton from "@/components/TheLanguageButton.vue";
 import axios from "axios";
 import { conversionFunctions } from "@/common/units-utils";
 
@@ -28,7 +34,7 @@ export default {
   components: {
     TheControlPane,
     TheChartAndOptions,
-    TheGeneralSettingsPane,
+    TheLanguageButton,
   },
 
   data() {
@@ -128,13 +134,34 @@ export default {
 </script>
 
 <style>
+html,
+body {
+  margin: 0px;
+  height: 100%;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background-image: linear-gradient(#3182ce, #1a4269);
+  height: 100%;
+}
+.app-header {
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+.app-title {
+  font-weight: bold;
+  font-size: 20px;
+  margin: 0px 20px;
+}
+.the-app-core {
+  max-width: 1200px;
+  min-height: 500px;
 }
 .svg-container {
   display: inline-block;
@@ -146,18 +173,29 @@ export default {
   margin: 4px;
 }
 .controlPanel {
-  width: 700px;
+  width: 600px;
+  background-color: white;
 }
 .general-settings {
   width: 500px;
-  display:flex;
-  justify-content:center;
+  display: flex;
+  justify-content: center;
 }
 .controlAndChart {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
 }
 .theChart {
   width: 550px;
+  background-color: white;
 }
+
+.app-footer {
+  height: 70px;
+}
+/* @media (max-width: 1300px) {
+  .the-app-core {
+    max-width: 1000px;
+  }
+} */
 </style>

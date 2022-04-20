@@ -1,14 +1,6 @@
 <template>
   <div>
-    <div class="viewChoice">
-      <b-button variant="primary" @click="view = 'chart'">{{
-        $t("chart")
-      }}</b-button>
-      <b-button variant="primary" @click="view = 'calendar'">{{
-        $t("Calendrier")
-      }}</b-button>
-    </div>
-    <div class="chartAndOptions" v-show="view === 'chart'">
+    <div class="chartAndOptions">
       <TheChart
         @colorBoxChanged="loadColorBoxes"
         @draggedDate="setActiveDot"
@@ -62,12 +54,13 @@
         </div>
       </div>
     </div>
-
-    <TheCalendarView
-      v-show="view === 'calendar'"
-      :colorBoxes="colorBoxes"
-      :range="range"
-    ></TheCalendarView>
+    <div class="calendar-section">
+      <div class="calendar-text">{{$t("calendar-view-title")}}</div>
+      <TheCalendarView
+        :colorBoxes="colorBoxes"
+        :range="range"
+      ></TheCalendarView>
+    </div>
   </div>
 </template> 
 
@@ -200,10 +193,6 @@ export default {
 </script>
 
 <style>
-.chartAndOptions {
-  border-radius: 10px;
-  border: 2px solid blue;
-}
 .dot {
   height: 15px;
   width: 15px;
@@ -256,5 +245,14 @@ export default {
     height: 15px;
     width: 15px;
   }
+}
+.calendar-text {
+  color:grey;
+  font-weight: bold;
+  margin:20px 5px 20px 5px;
+  max-width:130px;
+}
+.calendar-section{
+display: flex;
 }
 </style>

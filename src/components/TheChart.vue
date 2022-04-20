@@ -188,9 +188,10 @@ export default {
       let color = null;
       if (values.length != 0) {
         if (average(values) > this.dataToDisplay.waterLevel) {
-          color = "green";
+          color = "#3182ce";
         } else {
-          color = "red";
+          // below line
+          color = "#bbbbbb";
         }
         this.colorBoxes.push({
           startIndex: startIndex,
@@ -249,7 +250,7 @@ export default {
               this.x(this.dates[this.colorBoxes[i].startIndex])
           )
           .attr("height", this.height - this.margin.bottom)
-          .style("opacity", 0.3)
+          .style("opacity", 1)
           .attr("fill", this.colorBoxes[i].color);
       }
     },

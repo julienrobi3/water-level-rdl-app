@@ -38,7 +38,7 @@ export default {
       // get the data of the box
       for (let i = 0; i < this.colorBoxes.length; i++) {
         let onTwoDays = false;
-        if (this.colorBoxes[i].color === "green") {
+        if (this.colorBoxes[i].color === "#3182ce") {
           let dayStartForm = formatDateToDisplay(
             this.colorBoxes[i].startDate,
             days[this.$i18n.locale]
@@ -100,13 +100,15 @@ export default {
 <style>
 .calendar-days {
   display: flex;
-  justify-content: space-evenly;
   flex-wrap: wrap;
+  margin:10px;
 }
 .calendar-day{
-  border: 2px solid blue;
-  padding: 10px;
-  border-radius: 25px;  
-  margin:2px
+  padding: 5px;
+  margin:10px 5px 10px 5px;
+  background-color:#1a4269;
+  color:white;
+  font-size: 14px;
+  width:120px
 }
 </style>

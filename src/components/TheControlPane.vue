@@ -24,41 +24,47 @@
         <b-tab :title="$t('unknown_waterlevel')" active>
           <b-card-text
             ><div class="draught-selector">
-              <div>{{ $t("draught") }} ({{ $t($store.state.units) }})</div>
+              <div class="draught-selector-children">
+                {{ $t("draught") }}
+              </div>
               <input
+                class="draught-selector-children draught-selector-input"
                 v-model.number="draught"
                 type="number"
                 v-on:input="emitConfig"
               />
+              <UnitsSelector class="draught-selector-children"></UnitsSelector>
             </div>
-            <b-form-group
-              class="destination-selector"
-              :label="$t('boat-choice')"
-            >
+            <div class="destination-selector">
+              <div class="destination-selector-children">
+                {{ $t("boat-choice") }}
+              </div>
               <b-form-radio
+                class="destination-selector-children"
                 v-model="destinationSelected"
                 :value="marinaValue"
                 v-on:change="emitConfig"
                 >Marina</b-form-radio
               >
               <b-form-radio
+                class="destination-selector-children"
                 v-model="destinationSelected"
                 :value="visitorValue"
                 v-on:change="emitConfig"
                 >{{ $t("visitor-dock") }}</b-form-radio
               >
-            </b-form-group></b-card-text
+            </div></b-card-text
           >
         </b-tab>
         <b-tab :title="$t('specific_waterlevel')">
           <b-card-text class="specific-water-input-head"
             ><input
-              class="specific-water-input"
+              class="draught-selector-input"
               v-model.number="specificWaterLevel"
               type="number"
               v-on:input="emitConfig"
           /></b-card-text>
-          <div class="specific-units">{{ $t($store.state.units) }}</div>
+          <UnitsSelector class="draught-selector-children"></UnitsSelector>
         </b-tab>
       </b-tabs>
     </b-card>
@@ -72,7 +78,9 @@ import {
   formatDateToDisplay,
   formatTimeToDisplay,
 } from "@/common/timeRelatedFunctions";
+import UnitsSelector from "@/components/UnitsSelector.vue";
 export default {
+  components: { UnitsSelector },
   computed: {
     datesDisplayed() {
       let start = formatDateToDisplay(
@@ -211,13 +219,6 @@ export default {
   background-color: #3182ce !important;
   color: white !important;
 }
-.destination-selector {
-  border: 2px solid blue;
-  padding: 10px;
-  border-radius: 25px;
-  width: 70%;
-  margin: 0 auto;
-}
 .draught-selector {
   margin: 3px;
 }
@@ -228,16 +229,14 @@ export default {
 .specific-water-input-head {
   display: inline-block;
 }
-.specific-water-input {
-  width: 70px;
-  margin: 2px;
-}
 .specific-units {
   display: inline-block;
 }
 .card {
-  width: 450px;
+  width: 600px;
   margin: 0 auto;
+  padding:10px;
+  border:none !important;
 }
 .calendar-title {
   margin: 5px;
@@ -250,7 +249,7 @@ export default {
 #calendar-popup {
   padding: 15px;
   width: 60px;
-  cursor:pointer;
+  cursor: pointer;
 }
 @media (max-width: 450px) {
   .nav-item {
@@ -259,5 +258,35 @@ export default {
   .card {
     width: 350px;
   }
+}
+.nav-pills .mytab .nav-link:not(.active) {
+  background-color: red !important;
+}
+
+.card-header {
+  background-color: #3182ce !important;
+}
+.nav-link {
+  color: white !important;
+}
+.nav-link.active {
+  color: #3182ce !important;
+}
+.draught-selector-children {
+  display: inline-block;
+}
+
+.draught-selector-input {
+  width: 50px;
+  margin: 5px;
+}
+input[type="number"] {
+  box-sizing: border-box;
+  border: 2px solid #3182ce;
+  border-radius: 13px;
+}
+.destination-selector-children {
+  display: inline-block;
+  margin: 5px;
 }
 </style>

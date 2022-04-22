@@ -151,15 +151,15 @@ body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background-image: linear-gradient(#3182ce, #1a4269);
+  background-image: linear-gradient(#FFFFFF, #dddddd);
   min-height: 100%;
+  color:#1a4269;
 }
 .app-header {
   height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: white;
 }
 .app-title {
   font-weight: bold;
@@ -195,7 +195,7 @@ body {
 .controlPanel {
   width: 600px;
   background-color: white;
-  box-shadow: 0 0 5px rgb(0 0 0 / 25%);
+  box-shadow: 0 0 5px rgb(0 0 0 / 40%);
   margin: 6px;
   border-radius: 10px;
 }
@@ -212,12 +212,12 @@ body {
 .controlAndChart {
   display: inline-flex;
   flex-wrap: wrap;
-  background-color: white;
+  /* background-color: white; */
   justify-content: center;
 }
 .theChart {
   width: 550px;
-  background-color: white;
+  /* background-color: white; */
 }
 @media (max-width: 550px) {
   .theChart {

@@ -38,7 +38,7 @@ export default {
       // get the data of the box
       for (let i = 0; i < this.colorBoxes.length; i++) {
         let onTwoDays = false;
-        if (this.colorBoxes[i].color === "#3182ce") {
+        if (this.colorBoxes[i].color === "#1a4269") {
           let dayStartForm = formatDateToDisplay(
             this.colorBoxes[i].startDate,
             days[this.$i18n.locale]

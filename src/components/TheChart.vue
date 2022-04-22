@@ -142,7 +142,7 @@ export default {
         .attr("class", "line")
         .attr("d", this.line)
         .style("stroke-width", 4)
-        .style("stroke", "black")
+        .style("stroke", "#52a7f7")
         .style("fill", "none");
     },
     computeColorBoxesAndIntersections() {
@@ -186,12 +186,15 @@ export default {
       let values = this.data.slice(startIndex, endIndex).map((a) => a.value);
 
       let color = null;
+      let opacity = null;
       if (values.length != 0) {
         if (average(values) > this.dataToDisplay.waterLevel) {
-          color = "#3182ce";
+          color = "#1a4269";
+          opacity = 1;
         } else {
           // below line
-          color = "#bbbbbb";
+          color = "#ffffff";
+          opacity = 0;
         }
         this.colorBoxes.push({
           startIndex: startIndex,
@@ -199,6 +202,7 @@ export default {
           startDate: this.dates[startIndex],
           endDate: this.dates[endIndex],
           color: color,
+          opacity: opacity,
         });
       }
       this.$emit("colorBoxChanged", this.colorBoxes);
@@ -213,7 +217,7 @@ export default {
         .attr("x2", this.width)
         .attr("y2", this.y(this.dataToDisplay.waterLevel))
         .attr("class", "line")
-        .style("stroke", "black");
+        .style("stroke", "#52a7f7");
 
       // Add Intersection points
       for (let i = 0; i < this.intersectionPoints.length; i++) {
@@ -231,8 +235,9 @@ export default {
         this.svg
           .append("text")
           .style("opacity", 1)
-          .style("fill", "black")
+          .style("fill", "#52a7f7")
           .style("font-size", "25px")
+          .style("font-weight", "bold")
           .attr("class", "levelValuesOnChart")
           .attr("x", this.x(this.intersectionPoints[i].x) + 10)
           .attr("y", this.intersectionPoints[i].y - 5)
@@ -250,7 +255,7 @@ export default {
               this.x(this.dates[this.colorBoxes[i].startIndex])
           )
           .attr("height", this.height - this.margin.bottom)
-          .style("opacity", 1)
+          .style("opacity", this.colorBoxes[i].opacity)
           .attr("fill", this.colorBoxes[i].color);
       }
     },
@@ -314,11 +319,11 @@ export default {
         .call(this.xAxis)
         .selectAll("text")
         .style("font-size", 22)
-        .style("stroke", "black")
+        .style("stroke", "#52a7f7")
         .selectAll("line")
-        .style("stroke", "black")
+        .style("stroke", "#52a7f7")
         .selectAll("path")
-        .style("stroke", "black");
+        .style("stroke", "#52a7f7");
 
       this.svg.selectAll(".line").remove();
       this.svg.selectAll(".rect").remove();

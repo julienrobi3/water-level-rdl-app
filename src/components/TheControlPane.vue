@@ -68,6 +68,7 @@
         </b-tab>
       </b-tabs>
     </b-card>
+    <img id="marina-image" :src="require('@/assets/marina_rdl.png')" />
   </div>
 </template>
 
@@ -216,7 +217,7 @@ export default {
 }
 
 .popover-header {
-  background-color: #3182ce !important;
+  background-color: #1a4269 !important;
   color: white !important;
 }
 .draught-selector {
@@ -266,13 +267,13 @@ export default {
 }
 
 .card-header {
-  background-color: #3182ce !important;
+  background-color: #1a4269 !important;
 }
 .nav-link {
   color: white !important;
 }
 .nav-link.active {
-  color: #3182ce !important;
+  color: #1a4269 !important;
 }
 .draught-selector-children {
   display: inline-block;
@@ -284,11 +285,17 @@ export default {
 }
 input[type="number"] {
   box-sizing: border-box;
-  border: 2px solid #3182ce;
+  border: 2px solid #1a4269;
   border-radius: 13px;
 }
 .destination-selector-children {
   display: inline-block;
   margin: 5px;
+}
+#marina-image{
+  max-width:300px;
+  box-shadow: 0 0 5px rgb(0 0 0 / 40%);
+  border-radius: 4px;
+  margin:3px;
 }
 </style>

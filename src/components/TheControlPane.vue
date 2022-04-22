@@ -238,6 +238,11 @@ export default {
   padding:10px;
   border:none !important;
 }
+@media (max-width: 600px) {
+  .card {
+    width: 100%;
+  }
+}
 .calendar-title {
   margin: 5px;
   display: inline-block;
@@ -254,9 +259,6 @@ export default {
 @media (max-width: 450px) {
   .nav-item {
     width: 150px;
-  }
-  .card {
-    width: 350px;
   }
 }
 .nav-pills .mytab .nav-link:not(.active) {
@@ -277,7 +279,7 @@ export default {
 }
 
 .draught-selector-input {
-  width: 50px;
+  width: 60px;
   margin: 5px;
 }
 input[type="number"] {

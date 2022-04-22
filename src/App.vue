@@ -17,6 +17,14 @@
           class="theChart"
         ></TheChartAndOptions>
       </div>
+      <div class="app-description">
+        <div>{{ $t("app-description-intro") }}</div>
+        <ul>
+          <li>{{ $t("app-description-bullet-one") }}</li>
+          <li>{{ $t("app-description-bullet-two") }}</li>
+          <li>{{ $t("app-description-bullet-three") }}</li>
+        </ul>
+      </div>
     </div>
     <div class="app-footer"></div>
   </div>
@@ -141,11 +149,10 @@ body {
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   background-image: linear-gradient(#3182ce, #1a4269);
-  height: 100%;
+  min-height: 100%;
 }
 .app-header {
   height: 70px;
@@ -159,9 +166,22 @@ body {
   font-size: 20px;
   margin: 0px 20px;
 }
+@media (max-width: 500px) {
+  .app-title {
+    font-size: 13px;
+  }
+}
 .the-app-core {
-  max-width: 1200px;
+  width: 100%;
   min-height: 500px;
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+.app-description {
+  padding: 15px;
+  color: white;
+  max-width: 350px;
+  text-align: left;
 }
 .svg-container {
   display: inline-block;
@@ -175,6 +195,14 @@ body {
 .controlPanel {
   width: 600px;
   background-color: white;
+  box-shadow: 0 0 5px rgb(0 0 0 / 25%);
+  margin: 6px;
+  border-radius: 10px;
+}
+@media (max-width: 600px) {
+  .controlPanel {
+    width: 100%;
+  }
 }
 .general-settings {
   width: 500px;
@@ -184,18 +212,20 @@ body {
 .controlAndChart {
   display: inline-flex;
   flex-wrap: wrap;
+  background-color: white;
+  justify-content: center;
 }
 .theChart {
   width: 550px;
   background-color: white;
 }
-
-.app-footer {
-  height: 70px;
-}
-/* @media (max-width: 1300px) {
-  .the-app-core {
-    max-width: 1000px;
+@media (max-width: 550px) {
+  .theChart {
+    width: 100%;
   }
-} */
+}
+.app-footer {
+  height: 30px;
+  background-color: transparent;
+}
 </style>

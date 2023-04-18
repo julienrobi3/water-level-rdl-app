@@ -24,5 +24,9 @@
   "app-description-intro": "Cet outil permet de planifier vos sorties et entrées dans la marina de Rivière-du-Loup. \nPour se faire, vous devez:",
   "app-description-bullet-one": "Choisir une ou plusieurs date en cliquand sur le calendrier.",
   "app-description-bullet-two": "Indiquer le tirant d'eau de votre embarcation.",
-  "app-description-bullet-three": "Choisir l'endroit d'arrivée ou de sortie."
+  "app-description-bullet-three": "Choisir l'endroit d'arrivée ou de sortie.",
+  "member": "Membre",
+  "visitor": "Visiteur",
+  "marina-layout": "Voir Marina",
+  "specific-water-level": "Niveau d'eau"
 }

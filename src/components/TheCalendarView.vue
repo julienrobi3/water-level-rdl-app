@@ -3,7 +3,7 @@
     <div class="calendar-days">
       <div v-for="day in days" :key="day.title">
         <div class="calendar-day">
-          <div>{{ day.title }}</div>
+          <div class="calendar-day-title">{{ day.title }}</div>
           <div v-for="tide in day.data" :key="tide">{{ tide }}</div>
         </div>
       </div>
@@ -38,7 +38,7 @@ export default {
       // get the data of the box
       for (let i = 0; i < this.colorBoxes.length; i++) {
         let onTwoDays = false;
-        if (this.colorBoxes[i].color === "#1a4269") {
+        if (this.colorBoxes[i].type === "good") {
           let dayStartForm = formatDateToDisplay(
             this.colorBoxes[i].startDate,
             days[this.$i18n.locale]
@@ -103,12 +103,20 @@ export default {
   flex-wrap: wrap;
   margin:10px;
 }
+@media (max-width: 1000px) {
+  .calendar-days {
+    justify-content: center;
+  }
+}
 .calendar-day{
   padding: 5px;
   margin:10px 5px 10px 5px;
-  background-color:#1a4269;
-  color:white;
+  color:#BFB8AB;
   font-size: 14px;
   width:120px
+}
+.calendar-day-title{
+  font-weight: bold;
+  color:white;
 }
 </style>

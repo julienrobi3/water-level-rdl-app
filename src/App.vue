@@ -6,24 +6,8 @@
     </div>
     <div class="the-app-core">
       <div class="controlAndChart">
-        <TheControlPane
-          @config="modifyData"
-          @waterLevelType="changeType"
-          class="controlPanel"
-        ></TheControlPane>
-        <TheChartAndOptions
-          :dataToDisplay="dataToDisplay"
-          :range="range"
-          class="theChart"
-        ></TheChartAndOptions>
-      </div>
-      <div class="app-description">
-        <div>{{ $t("app-description-intro") }}</div>
-        <ul>
-          <li>{{ $t("app-description-bullet-one") }}</li>
-          <li>{{ $t("app-description-bullet-two") }}</li>
-          <li>{{ $t("app-description-bullet-three") }}</li>
-        </ul>
+        <TheControlPane @config="modifyData" @waterLevelType="changeType" class="controlPanel"></TheControlPane>
+        <TheChartAndOptions :dataToDisplay="dataToDisplay" :range="range" class="the-results"></TheChartAndOptions>
       </div>
     </div>
     <div class="app-footer"></div>
@@ -51,7 +35,7 @@ export default {
       draught: null,
       destination: null,
       specificWaterLevel: null,
-      waterLevelData: null,
+      waterLevelData: {},
       limitWaterLevel: 0,
       dataToDisplay: {},
       type: 0,
@@ -73,16 +57,19 @@ export default {
       return this.date2string(year, month, day, hour, minute);
     },
     apiCall: async function () {
+      let codes = [["wlp", "wlp"], ["wlp-hilo", "wlphilo"]]
       let _this = this;
-      const result = await axios.get(
-        "https://api.iwls.azure.cloud.dfo-mpo.gc.ca/api/v1/stations/5cebf1de3d0f4a073c4bbaf1/data?time-series-code=wlp&from=" +
+      for (let code of codes) {
+        const result = await axios.get(
+          "https://api.iwls.azure.cloud.dfo-mpo.gc.ca/api/v1/stations/5cebf1de3d0f4a073c4bbaf1/data?time-series-code=" + code[0] + "&from=" +
           _this.getDateValuesFromDate(_this.range[0]) +
           "&to=" +
           _this.getDateValuesFromDate(_this.range[1]) +
           ""
-      );
-      if (result.status === 200) {
-        this.waterLevelData = result.data;
+        );
+        if (result.status === 200) {
+          this.$set(this.waterLevelData, code[1], result.data);
+        }
       }
     },
     modifyData: function (config) {
@@ -105,7 +92,7 @@ export default {
       this.checkType();
     },
     checkType: function () {
-      if (this.type === 0) {
+      if (this.type === "visitor") {
         this.limitWaterLevel = this.draught + this.destination;
       } else {
         this.limitWaterLevel = this.specificWaterLevel;
@@ -124,11 +111,14 @@ export default {
       this.$set(this.dataToDisplay, "waterData", this.waterLevelData);
     },
     changeDataUnits: function (units) {
-      for (let i = 0; i < this.waterLevelData.length; i++) {
-        this.waterLevelData[i].value = conversionFunctions[units](
-          this.waterLevelData[i].value
-        );
+      for (let code in this.waterLevelData) {
+        for (let i = 0; i < this.waterLevelData[code].length; i++) {
+          this.waterLevelData[code][i].value = conversionFunctions[units](
+            this.waterLevelData[code][i].value
+          );
+        }
       }
+
     },
   },
   watch: {
@@ -147,83 +137,102 @@ body {
   margin: 0px;
   height: 100%;
 }
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background-image: linear-gradient(#FFFFFF, #dddddd);
+  background: transparent linear-gradient(179deg, #121C31 0%, #606775 100%) 0% 0% no-repeat padding-box;
   min-height: 100%;
-  color:#1a4269;
+  color: white;
+  margin: 0 auto;
 }
+
 .app-header {
   height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .app-title {
   font-weight: bold;
   font-size: 20px;
   margin: 0px 20px;
 }
+
 @media (max-width: 500px) {
   .app-title {
     font-size: 13px;
   }
 }
+
 .the-app-core {
   width: 100%;
   min-height: 500px;
-  display: inline-flex;
-  flex-wrap: wrap;
+  display: block;
 }
+
 .app-description {
   padding: 15px;
   color: white;
   max-width: 350px;
   text-align: left;
 }
+
 .svg-container {
   display: inline-block;
   position: relative;
-  width: 98%; /* aspect ratio */
-  height: 100%;
+  width: 98%;
+  /* aspect ratio */
+  /* height: 100%; */
   vertical-align: top;
   max-width: 700px;
   margin: 4px;
 }
+
 .controlPanel {
+  position:relative;
   width: 600px;
-  background-color: white;
-  box-shadow: 0 0 5px rgb(0 0 0 / 40%);
-  margin: 6px;
-  border-radius: 10px;
+  /* background-color: white; */
+  /* box-shadow: 0 0 5px rgb(0 0 0 / 40%); */
+  margin: 0 auto 20px auto;
+  /* border-radius: 10px; */
 }
+
 @media (max-width: 600px) {
   .controlPanel {
     width: 100%;
   }
 }
+
 .general-settings {
   width: 500px;
   display: flex;
   justify-content: center;
 }
-.controlAndChart {
-  display: inline-flex;
-  flex-wrap: wrap;
+
+
+
+.the-results {
+  display: flex;
+  max-width: 1000px;
+  margin: 0 auto;
   /* background-color: white; */
-  justify-content: center;
 }
-.theChart {
-  width: 550px;
-  /* background-color: white; */
+
+@media (max-width: 1000px) {
+  .the-results {
+    display: block;
+  }
 }
+
 @media (max-width: 550px) {
-  .theChart {
+  .the-results {
     width: 100%;
   }
 }
+
 .app-footer {
   height: 30px;
   background-color: transparent;

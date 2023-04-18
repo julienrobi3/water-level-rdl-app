@@ -1,65 +1,40 @@
 <template>
   <div>
     <div class="chartAndOptions">
-      <TheChart
-        @colorBoxChanged="loadColorBoxes"
-        @draggedDate="setActiveDot"
-        id="waterLevelChart"
-        class="svg-container"
-        :dataToDisplay="dataToDisplay"
-        :range="range"
-        :bus="bus"
-      ></TheChart>
+      <TheChart @colorBoxChanged="loadColorBoxes" @draggedDate="setActiveDot" id="waterLevelChart" class="svg-container"
+        :dataToDisplay="dataToDisplay" :range="range" :bus="bus"></TheChart>
       <div class="dot-wrapper" v-show="daysArray.length > 1">
         <div @click="dayMinusOne" :class="{ greyed: isBackGreyed }">
-          <img
-            class="back-next-arrows"
-            @mouseover="mouseOverBack"
-            @mouseleave="mouseLeaveBack"
-            :src="
-              isBackGreyed
-                ? require('@/assets/back-button-greyed.svg')
-                : isBackHovered
+          <img class="back-next-arrows" @mouseover="mouseOverBack" @mouseleave="mouseLeaveBack" :src="
+            isBackGreyed
+              ? require('@/assets/back-button-greyed.svg')
+              : isBackHovered
                 ? require('@/assets/back-button-black-on-white.svg')
                 : require('@/assets/back-button-white-on-black.svg')
-            "
-          />
+          " />
         </div>
 
-        <div
-          v-for="index in daysArray.length"
-          :key="index"
-          @click="logClick(index)"
-          class="dot-date"
-        >
+        <div v-for="index in daysArray.length" :key="index" @click="logClick(index)" class="dot-date">
           <div class="dot" :class="{ active: activeIndex === index }"></div>
-          <div v-show="activeIndex === index">
-            <div>{{ getDay(daysArray[index - 1]) }}</div>
-            <div>{{ getDate(daysArray[index - 1]) }}</div>
+          <div class="active-date" v-show="activeIndex === index">
+            <div class="active-date-line">{{ getDay(daysArray[index - 1]) }}</div>
+            <div class="active-date-line">{{ getDate(daysArray[index - 1]) }}</div>
           </div>
         </div>
         <div @click="dayPlusOne" :class="{ greyed: isNextGreyed }">
-          <img
-            class="back-next-arrows"
-            @mouseover="mouseOverNext"
-            @mouseleave="mouseLeaveNext"
-            :src="
-              isNextGreyed
-                ? require('@/assets/next-button-greyed.svg')
-                : isNextHovered
+          <img class="back-next-arrows" @mouseover="mouseOverNext" @mouseleave="mouseLeaveNext" :src="
+            isNextGreyed
+              ? require('@/assets/next-button-greyed.svg')
+              : isNextHovered
                 ? require('@/assets/next-button-black-on-white.svg')
                 : require('@/assets/next-button-white-on-black.svg')
-            "
-          />
+          " />
         </div>
       </div>
     </div>
+    <div class="separator"></div>
     <div class="calendar-section">
-      <div class="calendar-text">{{$t("calendar-view-title")}}</div>
-      <TheCalendarView
-        :colorBoxes="colorBoxes"
-        :range="range"
-      ></TheCalendarView>
+      <TheCalendarView :colorBoxes="colorBoxes" :range="range"></TheCalendarView>
     </div>
   </div>
 </template> 
@@ -193,40 +168,69 @@ export default {
 </script>
 
 <style>
+.chartAndOptions {
+  width: 75%;
+  margin: 0 auto;
+  
+}
+
+@media (max-width: 1000px) {
+  .chartAndOptions {
+    width: 100%;
+    
+  }
+}
+
 .dot {
   height: 15px;
   width: 15px;
-  background-color: #bbb;
+  background-color: white;
   border-radius: 50%;
   display: inline-block;
-  margin: 8px;
+  margin: 8px 8px 2px 8px ;
   cursor: pointer;
 }
+
 .dot:hover {
   height: 20px;
   width: 20px;
 }
+
 .dot.active {
   height: 20px;
   width: 20px;
-  background-color: #434a54;
+  background-color: black;
 }
+
 .dot-wrapper {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
   width: 100%;
+  margin-bottom: 15px;
 }
+
 .dot-date {
   width: 50px;
   line-height: 90%;
+  /* position:relative; */
 }
+.active-date{
+  /* position:absolute; */
+  /* top:30px; */
+}
+.active-date-line{
+  margin:5px 0 5px 0;
+}
+
 .back-next-arrows {
-  margin: 8px;
+  margin: 8px 8px 2px 8px ;
   width: 20px;
   height: 20px;
   cursor: pointer;
+  border-radius:10px;
 }
+
 .greyed {
   cursor: auto;
   pointer-events: none;
@@ -237,22 +241,46 @@ export default {
     width: 40px;
     font-size: small;
   }
+
   .dot:hover {
     height: 15px;
     width: 15px;
   }
+
   .dot.active {
     height: 15px;
     width: 15px;
   }
 }
+
 .calendar-text {
-  color:grey;
+  color: grey;
   font-weight: bold;
-  margin:20px 5px 20px 5px;
-  max-width:130px;
+  margin: 20px 5px 20px 5px;
+  max-width: 130px;
 }
-.calendar-section{
-display: flex;
+
+.calendar-section {
+  max-width: 400px;
+  margin: 0 auto
+}
+
+.separator {
+  width: 2px;
+  background: white;
+  margin-left:15px;
+}
+
+@media (max-width: 1000px) {
+  .separator {
+    height: 2px;
+    width: 75%;
+    margin: 0 auto;
+  }
+
+  .calendar-section {
+    max-width: 500px;
+    margin: 0 auto
+  }
 }
 </style>

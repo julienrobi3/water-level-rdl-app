@@ -6,6 +6,7 @@
 import { unitsShort } from "@/common/units-utils";
 import { fr_FR, en_EN } from "@/common/time-utils";
 import * as d3 from "d3";
+import { type } from "os";
 export default {
   props: ["dataToDisplay", "range", "bus"],
   data() {
@@ -19,6 +20,7 @@ export default {
         return _this.y(d.value);
       });
     return {
+      fontFamily: "Noto-Sans-JP, Avenir, Helvetica, Arial, sans-serif",
       localeChosen: null,
       view: "chart",
       startDisplayedDate: null,
@@ -26,7 +28,7 @@ export default {
       rect: null,
       width: 1000,
       height: 450,
-      margin: { top: 40, bottom: 20, left: 85, right: 40 },
+      margin: { top: 60, bottom: 40, left: 20, right: 110 },
       content: null,
       dates: null,
       minYValue: null,
@@ -45,6 +47,7 @@ export default {
       dateMaxDisplayed: null,
       limitNbOfHours: 24,
       data: [],
+      filteredData: [],
       lastIntersectIndex: 0,
       index: 0,
       predictionLine: null,
@@ -52,6 +55,11 @@ export default {
       allIntersectIndices: [0],
       colorBoxes: [],
     };
+  },
+  computed: {
+    unitString: function () {
+      return unitsShort[this.$store.state.units][this.$i18n.locale]
+    }
   },
   methods: {
     splitDateTime: function (string) {
@@ -78,7 +86,7 @@ export default {
       }
 
       this.data = [];
-      this.data = [...this.dataToDisplay["waterData"]];
+      this.data = [...this.dataToDisplay["waterData"]["wlp"]];
       this.data.sort(function (a, b) {
         var aSplit = _this.splitDateTime(a);
         var bSplit = _this.splitDateTime(b);
@@ -115,9 +123,9 @@ export default {
       // Set x axis
       this.x = d3
         .scaleTime()
-        .range([this.margin.left, this.width - this.margin.right]);
       //.domain(this.extentX);
       this.setXDomain();
+      this.x.range([this.margin.left, this.width - this.margin.right]);
 
       // Set y axis
       this.y = d3
@@ -132,17 +140,66 @@ export default {
         .attr("class", "svg-content-responsive")
         .attr("preserveAspectRatio", "xMinYMin meet")
         .attr("viewBox", "0 0 1000 500");
+
+      let defs = this.svg.append("defs")
+
+      var svgGradientAboveThreshold = defs.append("linearGradient")
+        .attr("id", "svgGradientAboveThreshold")
+        .attr("x1", "0%")
+        .attr("x2", "100%")
+        .attr("y1", "0%")
+        .attr("y2", "100%");
+
+      svgGradientAboveThreshold.append("stop")
+        .attr("class", "start")
+        .attr("offset", "0%")
+        .attr("stop-color", "#002b45")
+        .attr("stop-opacity", 1);
+
+      svgGradientAboveThreshold.append("stop")
+        .attr("class", "end")
+        .attr("offset", "100%")
+        .attr("stop-color", "#00416a")
+        .attr("stop-opacity", 1);
+
+      var svgGradientBelowThreshold = defs.append("linearGradient")
+        .attr("id", "svgGradientBelowThreshold")
+        .attr("x1", "0%")
+        .attr("x2", "100%")
+        .attr("y1", "0%")
+        .attr("y2", "100%");
+
+      svgGradientBelowThreshold.append("stop")
+        .attr("class", "start")
+        .attr("offset", "0%")
+        .attr("stop-color", "#842818")
+        .attr("stop-opacity", 1);
+
+      svgGradientBelowThreshold.append("stop")
+        .attr("class", "end")
+        .attr("offset", "100%")
+        .attr("stop-color", "#ce3d26")
+        .attr("stop-opacity", 1);
     },
     addPredictionLine() {
       this.svg.append("g");
-      //Display prediction lines
+      //Create the entire prediction line, for computational purposes only
       this.predictionLine = this.svg
         .append("path")
         .data([this.data])
-        .attr("class", "line")
+        .attr("class", "line upfrontItem")
+        .attr("d", this.line)
+        .style("stroke-width", 0)
+        .style("fill", "none");
+
+      // add the prediction line to display
+      this.svg
+        .append("path")
+        .data([this.filteredData])
+        .attr("class", "line upfrontItem")
         .attr("d", this.line)
         .style("stroke-width", 4)
-        .style("stroke", "#52a7f7")
+        .style("stroke", "white")
         .style("fill", "none");
     },
     computeColorBoxesAndIntersections() {
@@ -161,18 +218,39 @@ export default {
           if (
             !this.allIntersectIndices.includes(this.index) &&
             this.index -
-              this.allIntersectIndices[this.allIntersectIndices.length - 1] >
-              1
+            this.allIntersectIndices[this.allIntersectIndices.length - 1] >
+            1
           ) {
             this.allIntersectIndices.push(this.index);
-            this.intersectionPoints.push({
-              x: this.dates[this.index],
-              y: point.y,
-            });
+
+            //check if intersect from min to max or max to min
+            let diff = node.getPointAtLength(i - 1).y - point.y
+            let intersectType = null
+            if (diff < 0) {
+              intersectType = "maxToMin"
+            }
+            else { intersectType = "minToMax" }
+
+            // check if intersects are too close with eachother (2.75h). If so, dont inlude them.
+            if (this.intersectionPoints.length > 0 &&
+              this.index - this.intersectionPoints[this.intersectionPoints.length - 1].index < 11) {
+              this.intersectionPoints.pop()
+            }
+            else {
+              this.intersectionPoints.push({
+                index: this.index,
+                x: this.dates[this.index],
+                y: point.y,
+                intersectType: intersectType
+              });
+
+            }
             let startIndex = this.lastIntersectIndex;
             let endIndex = this.index;
             this.constructColorBox(startIndex, endIndex);
             this.lastIntersectIndex = this.index;
+
+
           }
         }
       }
@@ -183,80 +261,222 @@ export default {
     },
     constructColorBox(startIndex, endIndex) {
       const average = (array) => array.reduce((a, b) => a + b) / array.length;
-      let values = this.data.slice(startIndex, endIndex).map((a) => a.value);
+      let completeValues = this.data.slice(startIndex, endIndex + 1)
 
+      completeValues.splice(0, 0, { date: this.data[startIndex]["date"], value: this.dataToDisplay.waterLevel })
+      completeValues.push({ date: this.data[endIndex]["date"], value: this.dataToDisplay.waterLevel })
       let color = null;
-      let opacity = null;
-      if (values.length != 0) {
-        if (average(values) > this.dataToDisplay.waterLevel) {
-          color = "#1a4269";
-          opacity = 1;
+      let navType = null;
+      if (completeValues.length != 0) {
+        if (average(completeValues.map((a) => a.value)) > this.dataToDisplay.waterLevel) {
+          color = "url(#svgGradientAboveThreshold)";
+          navType = "good"
         } else {
           // below line
-          color = "#ffffff";
-          opacity = 0;
+          color = "url(#svgGradientBelowThreshold)";
+          navType = "bad"
         }
         this.colorBoxes.push({
+          type: navType,
           startIndex: startIndex,
           endIndex: endIndex,
           startDate: this.dates[startIndex],
           endDate: this.dates[endIndex],
           color: color,
-          opacity: opacity,
+          values: completeValues
         });
       }
       this.$emit("colorBoxChanged", this.colorBoxes);
     },
     fillChart: function () {
+      let _this = this
       //Add vertical line and threshold
       this.svg
         .append("line")
-        .attr("stroke", "#F00")
         .attr("x1", this.margin.left)
         .attr("y1", this.y(this.dataToDisplay.waterLevel))
-        .attr("x2", this.width)
+        .attr("x2", this.width - this.margin.right + 20)
         .attr("y2", this.y(this.dataToDisplay.waterLevel))
-        .attr("class", "line")
-        .style("stroke", "#52a7f7");
+        .attr("class", "line upfrontItem")
+        .style("stroke", "#58d9fd")
+        .style("stroke-width", 6);
 
-      // Add Intersection points
-      for (let i = 0; i < this.intersectionPoints.length; i++) {
+      // Styling à la Sophia
+      this.svg
+        .append("line")
+        .attr("x1", this.width - this.margin.right + 24)
+        .attr("y1", this.y(this.dataToDisplay.waterLevel))
+        .attr("x2", this.width - this.margin.right + 30)
+        .attr("y2", this.y(this.dataToDisplay.waterLevel))
+        .attr("class", "line upfrontItem")
+        .style("stroke", "#58d9fd")
+        .style("stroke-width", 6);
+
+      // Styling à la Sophia
+      this.svg
+        .append("line")
+        .attr("x1", this.width - this.margin.right + 34)
+        .attr("y1", this.y(this.dataToDisplay.waterLevel))
+        .attr("x2", this.width - this.margin.right + 40)
+        .attr("y2", this.y(this.dataToDisplay.waterLevel))
+        .attr("class", "line upfrontItem")
+        .style("stroke", "#58d9fd")
+        .style("stroke-width", 6);
+
+      // Styling à la Sophia
+      this.svg
+        .append("line")
+        .attr("x1", this.width - this.margin.right + 44)
+        .attr("y1", this.y(this.dataToDisplay.waterLevel))
+        .attr("x2", this.width - this.margin.right + 50)
+        .attr("y2", this.y(this.dataToDisplay.waterLevel))
+        .attr("class", "line upfrontItem")
+        .style("stroke", "#58d9fd")
+        .style("stroke-width", 6);
+
+      this.svg
+        .append("text")
+        .style("opacity", 1)
+        .style("fill", "#58d9fd")
+        .style("font-size", "22px")
+        .style("font-weight", "bold")
+        .style("font-family", this.fontFamily)
+        .attr("class", "levelValuesOnChart upfrontItem")
+        // .attr("x", this.x(point.x) + 4)
+        .attr("x", this.width - this.margin.right + 60)
+        .attr("y", this.y(this.dataToDisplay.waterLevel) + 6)
+        // .attr("text-anchor", "right")
+        .text(Math.round(this.dataToDisplay.waterLevel * 10) / 10 + this.unitString);
+
+      // Add mins and maxs points
+      let tideData = this.dataToDisplay["waterData"]["wlphilo"].filter(function (d) {
+        return new Date(d.eventDate) >= _this.dateMinDisplayed && new Date(d.eventDate) <= _this.dateMaxDisplayed;
+      })
+      for (let i = 0; i < tideData.length; i++) {
+        let tideState = null
+        if (i === 0) {
+          let diff = tideData[i + 1]["value"] - tideData[i]["value"]
+          tideState = diff > 0 ? "low" : "high";
+        }
+        else {
+          let diff = tideData[i - 1]["value"] - tideData[i]["value"]
+          tideState = diff > 0 ? "low" : "high";
+        }
+        let date = new Date(tideData[i]["eventDate"])
         this.svg
           .append("circle")
           .attr("class", "circle")
-          .attr("cx", this.x(this.intersectionPoints[i].x))
-          .attr("cy", this.intersectionPoints[i].y)
-          .attr("r", 5)
-          .style("fill", "black");
+          .attr("cx", this.x(date))
+          .attr("cy", this.y(tideData[i]["value"]))
+          .attr("r", 10)
+          .style("fill", "white");
 
-        let hours = this.intersectionPoints[i].x.getHours().toString();
-        let minutes = this.intersectionPoints[i].x.getMinutes().toString();
+        let hours = date.getHours().toString();
+        let minutes = date.getMinutes().toString();
         minutes = ("0" + minutes).slice(-2);
         this.svg
           .append("text")
           .style("opacity", 1)
-          .style("fill", "#52a7f7")
-          .style("font-size", "25px")
-          .style("font-weight", "bold")
-          .attr("class", "levelValuesOnChart")
-          .attr("x", this.x(this.intersectionPoints[i].x) + 10)
-          .attr("y", this.intersectionPoints[i].y - 5)
+          .style("fill", "white")
+          .style("font-family", this.fontFamily)
+          .style("font-size", "22px")
+          .attr("class", "levelValuesOnChart upfrontItem")
+          .attr("x", this.x(date))
+          .attr("y", function () {
+            if (tideState === "high") { return _this.y(tideData[i]["value"]) - 35 }
+            else { return _this.y(tideData[i]["value"]) + 29 }
+          })
+          .attr("text-anchor", "middle")
+          .text(hours + ":" + minutes);
+
+        this.svg
+          .append("text")
+          .style("opacity", 1)
+          .style("fill", "white")
+          .style("font-size", "20px")
+          .style("font-family", this.fontFamily)
+          .attr("class", "levelValuesOnChart upfrontItem")
+          .attr("x", this.x(date))
+          //.attr("y", this.y(tideData[i]["value"]) - 15)
+          .attr("y", function () {
+            if (tideState === "high") { return _this.y(tideData[i]["value"]) - 15 }
+            else { return _this.y(tideData[i]["value"]) + 50 }
+          })
+          .attr("text-anchor", "middle")
+          .text(Math.round(tideData[i]["value"] * 10) / 10 + this.unitString);
+      }
+
+      // Add intersection points
+      for (let point of this.intersectionPoints.filter(function (d) {
+        return d.x >= _this.dateMinDisplayed && d.x <= _this.dateMaxDisplayed;
+      })) {
+
+        this.svg
+          .append("circle")
+          .attr("class", "circle")
+          .attr("cx", _this.x(point.x))
+          .attr("cy", point.y)
+          .attr("r", 7)
+          .style("fill", "#b1cfca");
+
+        let hours = point.x.getHours().toString();
+        let minutes = point.x.getMinutes().toString();
+        minutes = ("0" + minutes).slice(-2);
+        this.svg
+          .append("text")
+          .style("opacity", 1)
+          .style("fill", "#b1cfca")
+          .style("font-size", "23px")
+          .style("font-family", this.fontFamily)
+          .attr("class", "levelValuesOnChart upfrontItem")
+          // .attr("x", this.x(point.x) + 4)
+          .attr("x", function () {
+            if (point.intersectType === "minToMax") { return _this.x(point.x) + 15 }
+            else { return _this.x(point.x) + 4 }
+          })
+          .attr("y", point.y - 5)
           .attr("text-anchor", "right")
           .text(hours + ":" + minutes);
+
       }
+
+      // for display, split colorboxes to only what we will see
+      let filteredColorBoxes = []
+
       for (let i = 0; i < this.colorBoxes.length; i++) {
-        d3.select("g")
-          .append("rect")
-          .attr("class", "rect")
-          .attr("x", this.x(this.dates[this.colorBoxes[i].startIndex]))
-          .attr(
-            "width",
-            this.x(this.dates[this.colorBoxes[i].endIndex]) -
-              this.x(this.dates[this.colorBoxes[i].startIndex])
-          )
-          .attr("height", this.height - this.margin.bottom)
-          .style("opacity", this.colorBoxes[i].opacity)
-          .attr("fill", this.colorBoxes[i].color);
+        if (this.dateMinDisplayed >= this.colorBoxes[i].startDate && this.dateMinDisplayed <= this.colorBoxes[i].endDate) {
+          filteredColorBoxes.push({ color: this.colorBoxes[i].color, values: [] })
+          // première boite, il faut la spliter au bon endroit
+          let filteredValues = this.colorBoxes[i].values.filter(function (d) {
+            return d.date >= _this.dateMinDisplayed && d.date <= _this.dateMaxDisplayed;
+          })
+          let whole_data = [{ date: this.dateMinDisplayed, value: this.dataToDisplay.waterLevel }].concat(filteredValues)
+          filteredColorBoxes.push({ color: this.colorBoxes[i].color, values: whole_data })
+
+        }
+        else if (this.dateMinDisplayed <= this.colorBoxes[i].startDate && this.dateMaxDisplayed >= this.colorBoxes[i].endDate) {
+          // toute le contenu de la boite doit être utilisé
+          filteredColorBoxes.push({ color: this.colorBoxes[i].color, values: this.colorBoxes[i].values })
+        }
+        else if (this.dateMaxDisplayed >= this.colorBoxes[i].startDate && this.dateMaxDisplayed <= this.colorBoxes[i].endDate) {
+          // dernière boite
+          let filteredValues = this.colorBoxes[i].values.filter(function (d) {
+            return d.date >= _this.dateMinDisplayed && d.date <= _this.dateMaxDisplayed;
+          })
+          filteredValues.push({ date: this.dateMaxDisplayed, value: this.dataToDisplay.waterLevel })
+          filteredColorBoxes.push({ color: this.colorBoxes[i].color, values: filteredValues })
+        }
+      }
+      for (let i = 0; i < filteredColorBoxes.length; i++) {
+        this.svg
+          .append("path")
+          .data([filteredColorBoxes[i].values])
+          .attr("class", "line")
+          .attr("d", this.line)
+          .style("stroke-width", 4)
+          .style("stroke", filteredColorBoxes[i].color)
+          .style("fill", filteredColorBoxes[i].color);
+
       }
     },
     findIndexRelated: function (xValue) {
@@ -309,21 +529,24 @@ export default {
       this.dateMinDisplayed.setTime(this.dateMinDisplayed.getTime() + diff);
       this.dateMaxDisplayed.setTime(this.dateMaxDisplayed.getTime() + diff);
       this.$emit("draggedDate", this.dateMinDisplayed);
+      // this.initializeChart();
+      // this.fillChart();
       this.resetChart();
     },
     resetChart: function () {
+
       this.setXDomain();
 
-      this.svg
-        .select(".xaxis")
-        .call(this.xAxis)
-        .selectAll("text")
-        .style("font-size", 22)
-        .style("stroke", "#52a7f7")
-        .selectAll("line")
-        .style("stroke", "#52a7f7")
-        .selectAll("path")
-        .style("stroke", "#52a7f7");
+      // this.svg
+      //   // .select(".xaxis")
+      //   // .call(this.xAxis)
+      //   .selectAll("text")
+      //   .style("font-size", 20)
+      //   .style("stroke", "#52a7f7")
+      //   .selectAll("line")
+      //   .style("stroke", "#52a7f7")
+      //   .selectAll("path")
+      //   .style("stroke", "#52a7f7");
 
       this.svg.selectAll(".line").remove();
       this.svg.selectAll(".rect").remove();
@@ -332,56 +555,10 @@ export default {
 
       this.addPredictionLine();
       this.fillChart();
-    },
+      this.svg.selectAll(".upfrontItem").raise()
+      this.svg.selectAll(".circle").raise()
+      this.svg.selectAll(".chartRect").raise()
 
-    setAxis: function () {
-      //configure xaxis
-      const xAxisPosition = this.height - this.margin.bottom;
-      const format = d3.timeFormat("%a %Hh");
-      this.xAxis = d3.axisBottom(this.x).ticks(10).tickFormat(format);
-      this.svg
-        .append("g")
-        .attr("class", "xaxis")
-        .attr("transform", "translate(0," + xAxisPosition + ")")
-        .call(this.xAxis)
-        .selectAll("text")
-        .style("font-size", 22)
-        .style("stroke", "black")
-        .selectAll("line")
-        .style("stroke", "black")
-        .selectAll("path")
-        .style("stroke", "black");
-
-      //Configure yaxis
-      this.svg
-        .append("g")
-        .attr("class", "yaxis")
-        .attr("transform", "translate(" + this.margin.left + ",0)")
-        .call(d3.axisLeft(this.y).ticks(6))
-        .style("font-size", 20)
-        .style("stroke", "black");
-
-      d3.selectAll(".xaxis line").style("stroke", "black");
-      d3.selectAll(".yaxis line").style("stroke", "black");
-
-      this.addYAxisLabel();
-    },
-    addYAxisLabel: function () {
-      // text label for the y axis
-      this.svg
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", this.margin.left - 90)
-        .attr("x", 0 - this.height / 2)
-        .attr("dy", "1em")
-        .attr("id", "yLabel")
-        .style("text-anchor", "middle")
-        .text(
-          `${this.$t("chartYLabel")} (${
-            unitsShort[this.$store.state.units][this.$i18n.locale]
-          })`
-        )
-        .style("font-size", 30);
     },
     setXDomain: function () {
       var dateVariable;
@@ -391,12 +568,14 @@ export default {
         this.dateMaxDisplayed = new Date(
           dateVariable.setHours(dateVariable.getHours() + this.limitNbOfHours)
         );
+        this.filterData()
         this.x.domain([this.dateMinDisplayed, this.dateMaxDisplayed]);
         //dateMaxDisplayed.setHours(dateMinDisplayed.getHours() + this.limitNbOfHours * 2)
       } else if (
         this.dateMinDisplayed > this.extentX[0] &&
         this.dateMaxDisplayed < this.extentX[1]
       ) {
+        this.filterData()
         this.x.domain([this.dateMinDisplayed, this.dateMaxDisplayed]);
       } else if (this.dateMaxDisplayed >= this.extentX[1]) {
         dateVariable = new Date(this.extentX[1]);
@@ -404,19 +583,33 @@ export default {
         this.dateMinDisplayed = new Date(
           dateVariable.setHours(dateVariable.getHours() - this.limitNbOfHours)
         );
+        this.filterData()
         this.x.domain([this.dateMinDisplayed, this.dateMaxDisplayed]);
       }
     },
+    filterData() {
+      let _this = this
+      this.filteredData = this.data.filter(function (d) {
+        return d.date >= _this.dateMinDisplayed && d.date <= _this.dateMaxDisplayed;
+      })
+
+    },
+
     updateChart: function () {
       this.clearContent();
-      if (this.dataToDisplay.waterData.length === 0) return;
+      if (this.dataToDisplay.waterData["wlp"].length === 0) return;
       this.initializeChart();
       if (this.svg === null) return;
       this.addPredictionLine();
       this.computeColorBoxesAndIntersections();
       this.fillChart();
-      this.setAxis();
+      this.svg.selectAll(".upfrontItem").raise()
+      this.svg.selectAll(".circle").raise()
+      this.svg.selectAll(".chartRect").raise()
       this.addInteractions();
+
+
+
     },
     changeStartDate: function () {
       let _this = this;
@@ -458,7 +651,7 @@ export default {
     });
   },
   watch: {
-    "dataToDisplay.waterData": function () {
+    "dataToDisplay.waterData.wlphilo": function () {
       this.updateChart();
     },
     "dataToDisplay.waterLevel": function () {

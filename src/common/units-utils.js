@@ -10,7 +10,7 @@ const units = {
 };
 const unitsShort = {
   foot: {
-    fr: "pied",
+    fr: "ft",
     en: "ft",
   },
   meter: {

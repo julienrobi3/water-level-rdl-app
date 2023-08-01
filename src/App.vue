@@ -125,13 +125,13 @@ export default {
         }
       }
 
-      
+
 
       this.$set(this.dataToDisplay, "waterLevel", this.limitWaterLevel);
       this.$set(this.dataToDisplay, "waterData", {});
-      
-      for (let code in this.waterLevelData){
-        this.$set(this.dataToDisplay["waterData"],code, this.waterLevelData[code]);
+
+      for (let code in this.waterLevelData) {
+        this.$set(this.dataToDisplay["waterData"], code, this.waterLevelData[code]);
       }
     },
 
@@ -196,11 +196,12 @@ body {
   font-weight: bold;
   font-size: 20px;
   margin: 0px 20px;
+  flex-grow: 1;
 }
 
 @media (max-width: 500px) {
   .app-title {
-    font-size: 13px;
+    font-size: 17px;
   }
 }
 
@@ -211,7 +212,17 @@ body {
 }
 
 .controlAndChart {
-  display: flex
+  display: flex;
+  justify-content: center;
+  max-width: 1500px;
+  margin: auto;
+
+}
+
+@media (max-width: 850px) {
+  .controlAndChart {
+    flex-direction: column-reverse;
+  }
 }
 
 .app-description {
@@ -237,11 +248,11 @@ body {
   /* width: 600px; */
   /* background-color: white; */
   /* box-shadow: 0 0 5px rgb(0 0 0 / 40%); */
-  margin: 0 auto 20px auto;
+  margin: 0 10px 20px auto;
   /* border-radius: 10px; */
 }
 
-@media (max-width: 600px) {
+@media (max-width: 850px) {
   .controlPanel {
     width: 100%;
   }
@@ -269,7 +280,7 @@ body {
   }
 }
 
-@media (max-width: 550px) {
+@media (max-width: 850px) {
   .the-results {
     width: 100%;
   }

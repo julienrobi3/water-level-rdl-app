@@ -3,30 +3,36 @@
     <div class="chartAndOptions">
       <TheChart @colorBoxChanged="loadColorBoxes" @draggedDate="setActiveDot" id="waterLevelChart" class="svg-container"
         :dataToDisplay="dataToDisplay" :range="range" :bus="bus"></TheChart>
-      <div class="dot-wrapper" v-show="daysArray.length > 1">
-        <div @click="dayMinusOne">
-          <img class="back-next-arrows" @mouseover="mouseOverBack" @mouseleave="mouseLeaveBack" :src="
-            isBackHovered
-                ? require('@/assets/back-button-black-on-white.svg')
-                : require('@/assets/back-button-white-on-black.svg')
-          " />
-        </div>
 
-        <!-- <div v-for="index in daysArray.length" :key="index" @click="logClick(index)" class="dot-date">
+      <div class="dot-and-text-container">
+        <div class="dot-wrapper">
+          <div @click="dayMinusOne">
+            <img class="back-next-arrows" @mouseover="mouseOverBack" @mouseleave="mouseLeaveBack" :src="isBackHovered
+              ? require('@/assets/angle-left-solid-grey.svg')
+              : require('@/assets/angle-left-solid.svg')
+              " />
+          </div>
+
+          <!-- <div v-for="index in daysArray.length" :key="index" @click="logClick(index)" class="dot-date">
           <div class="active-date" >
             <div class="active-date-line">{{ getDay(daysArray[index - 1]) }}</div>
             <div class="active-date-line">{{ getDate(daysArray[index - 1]) }}</div>
           </div>
         </div> -->
-        <div v-if="$store.state.selectedDate != null">{{ getDay($store.state.selectedDate) }}</div>  
-        <div @click="dayPlusOne">
-          <img class="back-next-arrows" @mouseover="mouseOverNext" @mouseleave="mouseLeaveNext" :src="
-            isNextHovered
-                ? require('@/assets/next-button-black-on-white.svg')
-                : require('@/assets/next-button-white-on-black.svg')
-          " />
+          <div class="color-circle"></div>
+          <div @click="dayPlusOne">
+            <img class="back-next-arrows" @mouseover="mouseOverNext" @mouseleave="mouseLeaveNext" :src="isNextHovered
+              ? require('@/assets/angle-right-solid-grey.svg')
+              : require('@/assets/angle-right-solid.svg')
+              " />
+          </div>
         </div>
+        <div v-if="$store.state.selectedDate != null" class="day-info-container">
+          <div>{{ getDay($store.state.selectedDate) }} {{ getDate($store.state.selectedDate) }}</div>
+        </div>
+
       </div>
+
     </div>
     <!-- <div class="separator"></div> -->
     <div class="calendar-section">
@@ -57,7 +63,7 @@ export default {
   },
   computed: {
     // selectedDate: function(){
-      
+
     // }
   },
   methods: {
@@ -67,7 +73,7 @@ export default {
       // displayDate.setDate(displayDate.getDate() + 1);
       // this.bus.$emit("dateClicked", displayDate);
       this.$emit("dateChanged", 1)
-      
+
     },
     dayMinusOne: function () {
       // this.activeIndex -= 1;
@@ -163,7 +169,7 @@ export default {
 .chartAndOptions {
   width: 95%;
   margin: 0 auto;
-  
+
 }
 
 /* @media (max-width: 1000px) {
@@ -179,7 +185,7 @@ export default {
   background-color: white;
   border-radius: 50%;
   display: inline-block;
-  margin: 8px 8px 2px 8px ;
+  margin: 8px 8px 2px 8px;
   cursor: pointer;
 }
 
@@ -199,7 +205,6 @@ export default {
   flex-wrap: nowrap;
   justify-content: center;
   width: 100%;
-  margin-bottom: 15px;
 }
 
 .dot-date {
@@ -207,21 +212,29 @@ export default {
   line-height: 90%;
   /* position:relative; */
 }
-.active-date{
+
+.active-date {
   /* position:absolute; */
   /* top:30px; */
 }
-.active-date-line{
-  margin:5px 0 5px 0;
+
+.active-date-line {
+  margin: 5px 0 5px 0;
 }
 
 .back-next-arrows {
-  margin: 8px 8px 2px 8px ;
+  margin: 8px 8px 2px 8px;
   width: 20px;
   height: 20px;
   cursor: pointer;
-  border-radius:10px;
+  border-radius: 50%;
+  background-color: #bbbfc4;
 }
+
+.back-next-arrows:hover {
+  background-color: #07234a;
+}
+
 
 .greyed {
   cursor: auto;
@@ -254,7 +267,8 @@ export default {
 
 .calendar-section {
   max-width: 400px;
-  margin: 0 auto
+  margin: 0 auto;
+  font-size: 20px;
 }
 
 /* .separator {
@@ -274,5 +288,22 @@ export default {
     max-width: 400px;
     margin: 0 auto
   }
+}
+
+.color-circle {
+  margin: 7px 3px 3px 3px;
+  border-radius: 50%;
+  background-color: #07234a;
+  width: 22px;
+  height: 22px;
+}
+
+.day-info-container {
+  line-height: 15px;
+  font-size: 20px;
+  margin:3px;
+}
+.dot-and-text-container{
+  margin-bottom: 15px;
 }
 </style>

@@ -31,11 +31,13 @@
       </div>
       <div class="selector-specific-text"> {{ $t("select-date") }}</div>
       <div class="date-selector">
-        <v-date-picker v-model="dateSelected" is-dark />
+        <v-date-picker v-show="windowWidth > 850" v-model="dateSelected" is-dark />
+        <v-date-picker v-show="windowWidth < 850" v-model="dateSelected" is-dark>
+          <template v-slot="{ inputValue, inputEvents }">
+            <input class="calendar-input border px-2 py-1 rounded" :value="inputValue" v-on="inputEvents" />
+          </template>
+        </v-date-picker>
       </div>
-
-
-
     </div>
 
     <div class="control-pane-tab" v-show="activeTab === 'visitor'">
@@ -65,6 +67,8 @@
           {{ $t("boat-choice") }}
           <span class="location-info-button" @click="extandMarina = !extandMarina">i</span>
         </div>
+        <div class="marina-image-container"><img id="marina-image" :src="require('@/assets/marina_rdl.png')"
+            v-if="extandMarina" @click="extandMarina = false" /></div>
         <div class="general-button-container">
           <div class="general-selection-button destination-button"
             @click="function () { destinationSelected = marinaValue; emitConfig() }"
@@ -81,10 +85,14 @@
       </div>
       <div class="selector-specific-text"> {{ $t("select-date") }}</div>
       <div class="date-selector">
-        <v-date-picker v-model="dateSelected" is-dark />
+        <v-date-picker v-show="windowWidth > 850" v-model="dateSelected" is-dark />
+        <v-date-picker v-show="windowWidth < 850" v-model="dateSelected" is-dark>
+          <template v-slot="{ inputValue, inputEvents }">
+            <input class="calendar-input border px-2 py-1 rounded" :value="inputValue" v-on="inputEvents" />
+          </template>
+        </v-date-picker>
       </div>
-      <img id="marina-image" :src="require('@/assets/marina_rdl.png')" v-if="extandMarina"
-        @click="extandMarina = false" />
+
     </div>
 
 
@@ -132,7 +140,8 @@ export default {
       marinaValues,
       visitorValues,
       destinationSelected: marinaValues[this.$store.state.units],
-      dateSelected
+      dateSelected,
+      windowWidth: window.innerWidth
     };
   },
   methods: {
@@ -201,8 +210,8 @@ export default {
       this.dateSelected = new Date(newValue)
     },
     dateSelected: function () {
-      let date = new Date(this.dateSelected)
-      if (date.setHours(0, 0, 0, 0) != this.$store.state.selectedDate) {
+      let date = new Date(this.dateSelected.setHours(0, 0, 0, 0))
+      if (date.getTime() != this.$store.state.selectedDate.getTime()) {
         this.emitConfig();
       }
 
@@ -266,7 +275,7 @@ export default {
   border: none !important;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 850px) {
   .card {
     width: 100%;
   }
@@ -317,7 +326,7 @@ export default {
   font-size: 23px;
   width: 45px;
   height: 30px;
-  margin: 5px 5px 0px 5px;
+  margin: 0px 5px 0px 5px;
   background-color: transparent;
   /* border: 2px solid #72767e; */
   border: none;
@@ -343,8 +352,9 @@ input[type="number"] {
 
 #marina-image {
   position: absolute;
-  top: 200px;
-  max-width: 95%;
+  top: 0px;
+  left: 4px;
+  width:300px;
   border-color: white;
   border-radius: 4px;
   z-index: 1000;
@@ -352,12 +362,17 @@ input[type="number"] {
   cursor: pointer;
 }
 
-#marina-image-small {
-  max-width: 40px;
-  border: 1px solid #FAFBFF;
-  border-radius: 4px;
-  margin: 3px;
+@media (max-width: 850px) {
+  .marina-image {
+    width:95%;
+  }
 }
+
+
+.marina-image-container {
+  position: relative;
+}
+
 
 .general-selection-button {
   color: #bbbfc4;
@@ -398,11 +413,6 @@ input[type="number"] {
   align-items: center; */
 }
 
-@media (max-width: 500px) {
-  .control-pane-tab {
-    font-size: 13px;
-  }
-}
 
 .marina-layout-option {
   display: flex;
@@ -417,6 +427,20 @@ input[type="number"] {
   align-items: center;
   margin: 0px 20px;
 }
+
+@media (max-width: 850px) {
+  .input-selector-specific-wl {
+    justify-content: center;
+  }
+
+  .input-number {
+    height: 25px;
+    width: 35px;
+    font-size: 18px;
+    margin: 0px 2px 0px 2px;
+  }
+}
+
 
 .input-selector-parent {
   display: block;
@@ -475,13 +499,13 @@ input[type=number] {
   top: -5px;
   font-size: 15px;
   margin: 3px;
-  padding:0px 6px;
+  padding: 0px 6px;
   /* border: 2px solid white; */
   border-radius: 50%;
   line-height: 1;
   font-weight: bold;
   cursor: pointer;
-  color:black;
+  color: black;
   background-color: white;
   /* border-radius: 50%;  
   border-color:white;
@@ -491,4 +515,10 @@ input[type=number] {
 .location-selector-text {
   position: relative;
 }
-</style>
+
+.calendar-input {
+  background-color: #07234a;
+  color: white;
+  font-size: 15px;
+  text-align: center;
+}</style>

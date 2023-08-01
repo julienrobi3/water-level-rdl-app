@@ -693,4 +693,7 @@ export default {
 .chartRect:active {
   cursor: grabbing;
 }
+.svg-content-responsive{
+  max-height:500px
+}
 </style>

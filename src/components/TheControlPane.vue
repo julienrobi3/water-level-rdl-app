@@ -136,7 +136,7 @@ export default {
       activeTab: "visitor",
       tabIndex: 0,
       specificWaterLevel: 6,
-      draught: 0,
+      draught: 4,
       marinaValues,
       visitorValues,
       destinationSelected: marinaValues[this.$store.state.units],
@@ -324,8 +324,8 @@ export default {
 
 .input-number {
   font-size: 23px;
-  width: 45px;
-  height: 30px;
+  width: 50px;
+  height: 35px;
   margin: 0px 5px 0px 5px;
   background-color: transparent;
   /* border: 2px solid #72767e; */
@@ -354,7 +354,7 @@ input[type="number"] {
   position: absolute;
   top: 0px;
   left: 4px;
-  width:300px;
+  width: 300px;
   border-color: white;
   border-radius: 4px;
   z-index: 1000;
@@ -364,7 +364,7 @@ input[type="number"] {
 
 @media (max-width: 850px) {
   .marina-image {
-    width:95%;
+    width: 95%;
   }
 }
 
@@ -433,12 +433,12 @@ input[type="number"] {
     justify-content: center;
   }
 
-  .input-number {
+  /* .input-number {
     height: 25px;
     width: 35px;
-    font-size: 18px;
+    font-size: 18px;  
     margin: 0px 2px 0px 2px;
-  }
+  } */
 }
 
 
@@ -521,4 +521,5 @@ input[type=number] {
   color: white;
   font-size: 15px;
   text-align: center;
-}</style>
+}
+</style>

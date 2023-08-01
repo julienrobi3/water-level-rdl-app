@@ -1,12 +1,20 @@
 <template>
   <div>
-    <div class="calendar-days">
-      <div v-for="day in days" :key="day.title">
+    <div>
+      <!-- <div v-for="day in days" :key="day.title">
         <div class="calendar-day">
           <div class="calendar-day-title">{{ day.title }}</div>
           <div v-for="tide in day.data" :key="tide">{{ tide }}</div>
         </div>
+      </div> -->
+      <div>{{ $t("navigational-timetable") }}</div>
+      <div class="calendar-days">
+        <span v-for="(time, index) in days" :key="index">
+          {{ time }}
+          <span v-if="index < days.length - 1"> &nbsp; / &nbsp; </span>
+        </span>
       </div>
+
     </div>
   </div>
 </template>
@@ -21,6 +29,9 @@ export default {
   props: ["colorBoxes", "range"],
   computed: {
     days() {
+      if (this.$store.state.selectedDate === null) {
+        return null
+      }
       let dayList = this.getDates(
         new Date(this.range[0]),
         new Date(this.range[1])
@@ -80,7 +91,17 @@ export default {
         }
       }
 
-      return dayData;
+      // Only show the date chosen
+      for (let index in dayData) {
+        if (formatDateToDisplay(
+          this.$store.state.selectedDate,
+          days[this.$i18n.locale]
+        ) === dayData[index].title) {
+          return dayData[index].data;
+        }
+      }
+      return null
+
     },
   },
   methods: {
@@ -101,22 +122,26 @@ export default {
 .calendar-days {
   display: flex;
   flex-wrap: wrap;
-  margin:10px;
+  /* margin: 10px; */
+  justify-content: center
 }
+
 @media (max-width: 1000px) {
   .calendar-days {
     justify-content: center;
   }
 }
-.calendar-day{
+
+.calendar-day {
   padding: 5px;
-  margin:10px 5px 10px 5px;
-  color:#BFB8AB;
+  margin: 10px 5px 10px 5px;
+  color: #BFB8AB;
   font-size: 14px;
-  width:120px
+  width: 120px
 }
-.calendar-day-title{
+
+.calendar-day-title {
   font-weight: bold;
-  color:white;
+  color: white;
 }
 </style>

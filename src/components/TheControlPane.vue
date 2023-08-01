@@ -1,76 +1,87 @@
 <template>
   <div>
-    <div class="typeOfUserSelection">
-      <div class="typeOfUserButton" @click="activeTab = 'member'" :class="activeTab === 'member' ? 'activeUserTab' : ''">
+    <div class="typeOfUserSelection general-button-container">
+      <div class="typeOfUserButton general-selection-button" @click="activeTab = 'member'"
+        :class="activeTab === 'member' ? 'activeUserTab' : ''">
         {{
           $t("member") }}</div>
-      <div class="typeOfUserButton" @click="activeTab = 'visitor'"
+      <div class="typeOfUserButton general-selection-button" @click="activeTab = 'visitor'"
         :class="activeTab === 'visitor' ? 'activeUserTab' : ''">{{
           $t("visitor") }}</div>
     </div>
 
 
     <div class="control-pane-tab" v-show="activeTab === 'member'">
-      <div class="dates-chosen-and-calendar">
-        <img id="calendar-popup-member" class="calendar-popup" :src="require('@/assets/calendar-icon.svg')" />
-      </div>
-      <b-popover target="calendar-popup-member" :title="$t('calendar')" triggers="hover focus">
-        <div class="date-selector">
-          <v-date-picker v-model="range" is-range @input="handleInput()" />
-        </div>
-        <div>{{ $t("calendar-explanation") }}</div>
-        <div class="warning-range" v-show="invalidRange">
-          {{ $t("invalidRangeMessage") }}
-        </div>
-      </b-popover>
       <div class="input-selector">
-        <div class="input-selector-specific-wl-text">{{ $t("specific-water-level") }}</div>
+        <div class="selector-specific-text">{{ $t("specific-water-level") }}</div>
         <div class="input-selector-specific-wl">
-          <input class="draught-selector-input" v-model.number="specificWaterLevel" type="number"
-            v-on:input="emitConfig" />
+          <div class="input-number-container">
+            <input class="input-number" v-model.number="specificWaterLevel" type="number" v-on:input="emitConfig"
+              onclick="this.select();" />
+            <div class="angle-buttons">
+              <div class="angle-button-container" @click="modifyWaterLevel(1)"><img class="angle-button"
+                  :src="require('@/assets/angle-up-solid.svg')" /></div>
+              <div class="angle-button-container" @click="modifyWaterLevel(-1)"><img class="angle-button"
+                  :src="require('@/assets/angle-down-solid.svg')" /></div>
+            </div>
+          </div>
+
           <UnitsSelector class="draught-selector-children"></UnitsSelector>
         </div>
       </div>
+      <div class="selector-specific-text"> {{ $t("select-date") }}</div>
+      <div class="date-selector">
+        <v-date-picker v-model="dateSelected" is-dark />
+      </div>
+
 
 
     </div>
 
     <div class="control-pane-tab" v-show="activeTab === 'visitor'">
-      <div class="dates-chosen-and-calendar">
-        <img id="calendar-popup-visitor" class="calendar-popup" :src="require('@/assets/calendar-icon.svg')" />
-      </div>
-      <b-popover target="calendar-popup-visitor" :title="$t('calendar')" triggers="hover focus">
-        <div class="date-selector">
-          <v-date-picker v-model="range" is-range @input="handleInput()" />
-        </div>
-        <div>{{ $t("calendar-explanation") }}</div>
-        <div class="warning-range" v-show="invalidRange">
-          {{ $t("invalidRangeMessage") }}
-        </div>
-      </b-popover>
+
       <div class="draught-selector">
-        <div class="draught-selector-children">
-          <div>
-            {{ $t("draught") }}
-          </div>
-          <input class="draught-selector-input" v-model.number="draught" type="number" v-on:input="emitConfig" />
+        <div class="selector-specific-text">
+          {{ $t("draught") }}
         </div>
-        <UnitsSelector class="draught-selector-children"></UnitsSelector>
+        <div class="input-selector-specific-wl">
+          <div class="input-number-container">
+            <input class="input-number" v-model.number="draught" type="number" v-on:input="emitConfig"
+              onclick="this.select();" />
+            <div class="angle-buttons">
+              <div class="angle-button-container" @click="modifyDraught(1)"><img class="angle-button"
+                  :src="require('@/assets/angle-up-solid.svg')" /></div>
+              <div class="angle-button-container" @click="modifyDraught(-1)"><img class="angle-button"
+                  :src="require('@/assets/angle-down-solid.svg')" /></div>
+            </div>
+
+          </div>
+          <UnitsSelector class="draught-selector-children"></UnitsSelector>
+        </div>
+
       </div>
       <div class="destination-selector">
-        <div>
-          <div class="destination-selector-children"
+        <div class="selector-specific-text location-selector-text">
+          {{ $t("boat-choice") }}
+          <span class="location-info-button" @click="extandMarina = !extandMarina">i</span>
+        </div>
+        <div class="general-button-container">
+          <div class="general-selection-button destination-button"
             @click="function () { destinationSelected = marinaValue; emitConfig() }"
             :class="destinationSelected === marinaValue ? 'active-selection' : ''">
             Marina</div>
-          <div class="destination-selector-children"
+          <div class="general-selection-button destination-button"
             @click="function () { destinationSelected = visitorValue; emitConfig() }"
             :class="destinationSelected === visitorValue ? 'active-selection' : ''">{{ $t("visitor-dock") }}</div>
         </div>
-        <div class="marina-layout-option" @click="extandMarina = !extandMarina">
+        <!-- <div class="marina-layout-option" @click="extandMarina = !extandMarina">
           <div>{{ $t("marina-layout") }}</div>
           <img id="marina-image-small" :src="require('@/assets/marina_rdl.png')" />
-        </div>
+        </div> -->
+      </div>
+      <div class="selector-specific-text"> {{ $t("select-date") }}</div>
+      <div class="date-selector">
+        <v-date-picker v-model="dateSelected" is-dark />
       </div>
       <img id="marina-image" :src="require('@/assets/marina_rdl.png')" v-if="extandMarina"
         @click="extandMarina = false" />
@@ -92,23 +103,6 @@ import UnitsSelector from "@/components/UnitsSelector.vue";
 export default {
   components: { UnitsSelector },
   computed: {
-    datesDisplayed() {
-      let start = formatDateToDisplay(
-        this.range.start,
-        days[this.$i18n.locale]
-      );
-      let end = formatDateToDisplay(this.range.end, days[this.$i18n.locale]);
-      if (start === end) {
-        return start;
-      }
-      return `${start} - ${end}`;
-    },
-    validRange() {
-      if (this.calculateDiffDays(this.range.start, this.range.end) > 6) {
-        return false;
-      }
-      return true;
-    },
     visitorValue() {
       return this.visitorValues[this.$store.state.units];
     },
@@ -127,22 +121,18 @@ export default {
       meter: meterMarinaValue,
       foot: conversionFunctions.foot(meterMarinaValue),
     };
+    let dateSelected = new Date()
 
     return {
       extandMarina: false,
-      activeTab: "member",
+      activeTab: "visitor",
       tabIndex: 0,
-      invalidRange: false,
-      specificWaterLevel: 2,
+      specificWaterLevel: 6,
       draught: 0,
-      range: {
-        start: new Date(),
-        end: new Date(),
-      },
-      trimmedRange: { start: null, end: null },
       marinaValues,
       visitorValues,
       destinationSelected: marinaValues[this.$store.state.units],
+      dateSelected
     };
   },
   methods: {
@@ -153,51 +143,69 @@ export default {
     emitConfig: function () {
       let config = {};
       config["draught"] = this.draught;
-      config["range"] = this.trimmedRange;
+      config["selectedDate"] = new Date(this.dateSelected.setHours(0, 0, 0, 0));
       config["destination"] = parseFloat(this.destinationSelected);
       config["specificWaterLevel"] = this.specificWaterLevel === "" ? 0 : this.specificWaterLevel;
       this.$emit("config", config);
     },
-
-    handleInput() {
-      this.$nextTick(() => {
-        let endDate;
-        if (!this.validRange) {
-          endDate = new Date();
-          endDate.setMonth(this.range.start.getMonth());
-          endDate.setDate(this.range.start.getDate() + 5);
-          this.range = {
-            start: this.range.start,
-            end: new Date(endDate),
-          };
-          this.invalidRange = true;
-        } else {
-          this.range = {
-            start: this.range.start,
-            end: this.range.end,
-          };
-          endDate = new Date(this.range.end);
-          this.invalidRange = false;
-        }
-
-        this.range.start.setHours(0, 0, 0, 0);
-        endDate.setDate(endDate.getDate() + 1);
-        endDate.setHours(0, 0, 0, 0);
-
-        this.trimmedRange = { start: this.range.start, end: endDate };
-      });
+    modifyWaterLevel: function (modif) {
+      this.specificWaterLevel = this.specificWaterLevel + modif
+      this.emitConfig()
     },
+    modifyDraught: function (modif) {
+      this.draught = this.draught + modif
+      this.emitConfig()
+    },
+
+    // handleInput() {
+    //   this.$nextTick(() => {
+    //     let endDate;
+    //     if (!this.validRange) {
+    //       endDate = new Date();
+    //       endDate.setMonth(this.range.start.getMonth());
+    //       endDate.setDate(this.range.start.getDate() + 5);
+    //       this.range = {
+    //         start: this.range.start,
+    //         end: new Date(endDate),
+    //       };
+    //       this.invalidRange = true;
+    //     } else {
+    //       this.range = {
+    //         start: this.range.start,
+    //         end: this.range.end,
+    //       };
+    //       endDate = new Date(this.range.end);
+    //       this.invalidRange = false;
+    //     }
+
+    //     this.range.start.setHours(0, 0, 0, 0);
+    //     endDate.setDate(endDate.getDate() + 1);
+    //     endDate.setHours(0, 0, 0, 0);
+
+    //     this.trimmedRange = { start: this.range.start, end: endDate };
+    //   });
+    // },
   },
   mounted() {
     let _this = this;
-    async function mount() {
-      await _this.handleInput();
-    }
-    mount();
+
+    // let _this = this;
+    // async function mount() {
+    //   await _this.handleInput();
+    // }
+    // mount();
+    this.emitConfig()
   },
   watch: {
-    trimmedRange: function () {
-      this.emitConfig();
+    "$store.state.selectedDate": function (newValue) {
+      this.dateSelected = new Date(newValue)
+    },
+    dateSelected: function () {
+      let date = new Date(this.dateSelected)
+      if (date.setHours(0, 0, 0, 0) != this.$store.state.selectedDate) {
+        this.emitConfig();
+      }
+
     },
     activeTab: function () {
       this.$emit("waterLevelType", this.activeTab);
@@ -235,13 +243,17 @@ export default {
 
 .draught-selector {
   display: block;
-  margin: 10px 20px 10px 20px;
+  margin: 10px 20px 0px 20px;
 }
 
-.warning-range {
-  color: #d86c00;
+.input-number-container {
+  display: flex;
+  background-color: #495361;
+  border: 1px solid #71757d;
+  border-radius: 4px;
+  overflow: hidden;
+  align-items: center;
 }
-
 
 .specific-units {
   display: inline-block;
@@ -301,19 +313,21 @@ export default {
 
 }
 
-.draught-selector-input {
-  width: 40px;
+.input-number {
+  font-size: 23px;
+  width: 45px;
   height: 30px;
   margin: 5px 5px 0px 5px;
   background-color: transparent;
-  border: 2px solid #FAFBFF;
-  color: white;
+  /* border: 2px solid #72767e; */
+  border: none;
+  color: #00dffe;
+  font-weight: bold;
   text-align: center;
 }
 
 input[type="number"] {
   box-sizing: border-box;
-  border-radius: 8px;
 }
 
 .destination-selector-children {
@@ -345,28 +359,43 @@ input[type="number"] {
   margin: 3px;
 }
 
+.general-selection-button {
+  color: #bbbfc4;
+  cursor: pointer;
+  background-color: #47566b;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.75);
+  font-weight: bold;
+}
+
 .typeOfUserSelection {
-  display: flex;
+  margin: 10px;
+  font-size: 20px;
+}
+
+.general-button-container {
+  overflow: hidden;
+  border-radius: 8px;
+  display: inline-flex;
   justify-content: center;
 }
 
 .typeOfUserButton {
-  margin: 20px;
+  /* margin: 20px 0px; */
   padding: 5px 15px 5px 15px;
-  border: 2px solid #FAFBFF;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
+  /* border: 2px solid #FAFBFF; */
+  width: 100px;
 }
 
 .activeUserTab {
-  background-color: #003D64;
+  background-color: #07234a;
+  color: white;
+  box-shadow: none;
 }
 
 .control-pane-tab {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* display: flex; */
+  /* justify-content: center;
+  align-items: center; */
 }
 
 @media (max-width: 500px) {
@@ -384,7 +413,7 @@ input[type="number"] {
 
 .input-selector-specific-wl {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   margin: 0px 20px;
 }
@@ -393,11 +422,16 @@ input[type="number"] {
   display: block;
 }
 
+.input-selector {
+  margin: 10px;
+}
+
 .active-selection {
-  padding: 0px 1px;
-  border-radius: 7px;
+  /* padding: 0px 1px; */
   font-weight: bold;
-  text-decoration: underline;
+  background-color: #07234a;
+  color: white;
+  box-shadow: none;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -410,5 +444,51 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.angle-button {
+  vertical-align: baseline;
+  cursor: pointer;
+}
+
+.angle-buttons {
+  display: block;
+  margin-right: 5px;
+}
+
+.angle-button-container {
+  width: 15px;
+  height: 15px;
+}
+
+.selector-specific-text {
+  font-size: large;
+  margin-top: 10px;
+}
+
+.destination-button {
+  padding: 5px;
+}
+
+.location-info-button {
+  position: absolute;
+  top: -5px;
+  font-size: 15px;
+  margin: 3px;
+  padding:0px 6px;
+  /* border: 2px solid white; */
+  border-radius: 50%;
+  line-height: 1;
+  font-weight: bold;
+  cursor: pointer;
+  color:black;
+  background-color: white;
+  /* border-radius: 50%;  
+  border-color:white;
+  border-width: 1px;  */
+}
+
+.location-selector-text {
+  position: relative;
 }
 </style>

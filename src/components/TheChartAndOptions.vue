@@ -4,35 +4,31 @@
       <TheChart @colorBoxChanged="loadColorBoxes" @draggedDate="setActiveDot" id="waterLevelChart" class="svg-container"
         :dataToDisplay="dataToDisplay" :range="range" :bus="bus"></TheChart>
       <div class="dot-wrapper" v-show="daysArray.length > 1">
-        <div @click="dayMinusOne" :class="{ greyed: isBackGreyed }">
+        <div @click="dayMinusOne">
           <img class="back-next-arrows" @mouseover="mouseOverBack" @mouseleave="mouseLeaveBack" :src="
-            isBackGreyed
-              ? require('@/assets/back-button-greyed.svg')
-              : isBackHovered
+            isBackHovered
                 ? require('@/assets/back-button-black-on-white.svg')
                 : require('@/assets/back-button-white-on-black.svg')
           " />
         </div>
 
-        <div v-for="index in daysArray.length" :key="index" @click="logClick(index)" class="dot-date">
-          <div class="dot" :class="{ active: activeIndex === index }"></div>
-          <div class="active-date" v-show="activeIndex === index">
+        <!-- <div v-for="index in daysArray.length" :key="index" @click="logClick(index)" class="dot-date">
+          <div class="active-date" >
             <div class="active-date-line">{{ getDay(daysArray[index - 1]) }}</div>
             <div class="active-date-line">{{ getDate(daysArray[index - 1]) }}</div>
           </div>
-        </div>
-        <div @click="dayPlusOne" :class="{ greyed: isNextGreyed }">
+        </div> -->
+        <div v-if="$store.state.selectedDate != null">{{ getDay($store.state.selectedDate) }}</div>  
+        <div @click="dayPlusOne">
           <img class="back-next-arrows" @mouseover="mouseOverNext" @mouseleave="mouseLeaveNext" :src="
-            isNextGreyed
-              ? require('@/assets/next-button-greyed.svg')
-              : isNextHovered
+            isNextHovered
                 ? require('@/assets/next-button-black-on-white.svg')
                 : require('@/assets/next-button-white-on-black.svg')
           " />
         </div>
       </div>
     </div>
-    <div class="separator"></div>
+    <!-- <div class="separator"></div> -->
     <div class="calendar-section">
       <TheCalendarView :colorBoxes="colorBoxes" :range="range"></TheCalendarView>
     </div>
@@ -60,29 +56,25 @@ export default {
     };
   },
   computed: {
-    isBackGreyed: function () {
-      if (this.activeIndex === 1) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    isNextGreyed: function () {
-      if (this.activeIndex === this.daysArray.length) {
-        return true;
-      } else {
-        return false;
-      }
-    },
+    // selectedDate: function(){
+      
+    // }
   },
   methods: {
     dayPlusOne: function () {
-      this.activeIndex += 1;
-      this.bus.$emit("dateClicked", this.daysArray[this.activeIndex - 1]);
+      // this.activeIndex += 1;
+      // let displayDate = new Date(this.$store.state.selectedDate)
+      // displayDate.setDate(displayDate.getDate() + 1);
+      // this.bus.$emit("dateClicked", displayDate);
+      this.$emit("dateChanged", 1)
+      
     },
     dayMinusOne: function () {
-      this.activeIndex -= 1;
-      this.bus.$emit("dateClicked", this.daysArray[this.activeIndex - 1]);
+      // this.activeIndex -= 1;
+      // let displayDate = new Date(this.$store.state.selectedDate)
+      // displayDate.setDate(displayDate.getDate() - 1);
+      // this.bus.$emit("dateClicked", displayDate);
+      this.$emit("dateChanged", -1)
     },
     mouseOverBack: function () {
       this.isBackHovered = true;
@@ -169,17 +161,17 @@ export default {
 
 <style>
 .chartAndOptions {
-  width: 75%;
+  width: 95%;
   margin: 0 auto;
   
 }
 
-@media (max-width: 1000px) {
+/* @media (max-width: 1000px) {
   .chartAndOptions {
     width: 100%;
     
   }
-}
+} */
 
 .dot {
   height: 15px;
@@ -265,21 +257,21 @@ export default {
   margin: 0 auto
 }
 
-.separator {
+/* .separator {
   width: 2px;
   background: white;
   margin-left:15px;
-}
+} */
 
 @media (max-width: 1000px) {
-  .separator {
+  /* .separator {
     height: 2px;
     width: 75%;
     margin: 0 auto;
-  }
+  } */
 
   .calendar-section {
-    max-width: 500px;
+    max-width: 400px;
     margin: 0 auto
   }
 }

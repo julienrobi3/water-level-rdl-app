@@ -6,8 +6,10 @@
     </div>
     <div class="the-app-core">
       <div class="controlAndChart">
+        <TheChartAndOptions :dataToDisplay="dataToDisplay" :range="range" @dateChanged="modifyDate" class="the-results">
+        </TheChartAndOptions>
+
         <TheControlPane @config="modifyData" @waterLevelType="changeType" class="controlPanel"></TheControlPane>
-        <TheChartAndOptions :dataToDisplay="dataToDisplay" :range="range" class="the-results"></TheChartAndOptions>
       </div>
     </div>
     <div class="app-footer"></div>
@@ -32,13 +34,14 @@ export default {
   data() {
     return {
       range: [],
+      selectedDate: null,
       draught: null,
       destination: null,
       specificWaterLevel: null,
       waterLevelData: {},
       limitWaterLevel: 0,
       dataToDisplay: {},
-      type: 0,
+      type: "visitor",
       changedRange: true,
     };
   },
@@ -68,23 +71,37 @@ export default {
           ""
         );
         if (result.status === 200) {
-          this.$set(this.waterLevelData, code[1], result.data);
+          this.waterLevelData[code[1]] = result.data;
         }
       }
     },
     modifyData: function (config) {
       if (
-        this.range[0] === config.range.start &&
-        this.range[1] === config.range.end
+        this.$store.state.selectedDate === config.selectedDate
       ) {
         this.changedRange = false;
       } else {
         this.changedRange = true;
       }
-      this.range = [config.range.start, config.range.end];
+      this.$store.mutations.updateSelectedDate(config.selectedDate)
+      this.range = this.getRange(config.selectedDate)
       this.draught = config.draught;
       this.destination = config.destination;
       this.specificWaterLevel = config.specificWaterLevel;
+      this.checkType();
+    },
+    modifyDate: function (dateChange) {
+      let selectedDate = new Date(this.$store.state.selectedDate)
+      selectedDate.setDate(selectedDate.getDate() + dateChange);
+      if (
+        this.$store.state.selectedDate === selectedDate
+      ) {
+        this.changedRange = false;
+      } else {
+        this.changedRange = true;
+      }
+      this.$store.mutations.updateSelectedDate(new Date(selectedDate))
+      this.range = this.getRange(selectedDate)
       this.checkType();
     },
     changeType: function (type) {
@@ -107,8 +124,28 @@ export default {
           this.changeDataUnits(this.$store.state.units);
         }
       }
+
+      
+
       this.$set(this.dataToDisplay, "waterLevel", this.limitWaterLevel);
-      this.$set(this.dataToDisplay, "waterData", this.waterLevelData);
+      this.$set(this.dataToDisplay, "waterData", {});
+      
+      for (let code in this.waterLevelData){
+        this.$set(this.dataToDisplay["waterData"],code, this.waterLevelData[code]);
+      }
+    },
+
+    getRange: function (selectedDate) {
+      let startDate = new Date(selectedDate)
+      startDate.setDate(startDate.getDate() - 1);
+      startDate.setHours(0, 0, 0, 0);
+
+      let endDate = new Date(selectedDate)
+      endDate.setDate(endDate.getDate() + 2);
+      endDate.setHours(0, 0, 0, 0);
+
+      return [startDate, endDate]
+
     },
     changeDataUnits: function (units) {
       for (let code in this.waterLevelData) {
@@ -139,7 +176,7 @@ body {
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: calibri, Arial, Avenir, Helvetica, sans-serif;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   background: transparent linear-gradient(179deg, #121C31 0%, #606775 100%) 0% 0% no-repeat padding-box;
@@ -173,6 +210,10 @@ body {
   display: block;
 }
 
+.controlAndChart {
+  display: flex
+}
+
 .app-description {
   padding: 15px;
   color: white;
@@ -187,13 +228,13 @@ body {
   /* aspect ratio */
   /* height: 100%; */
   vertical-align: top;
-  max-width: 700px;
+  /* max-width: 700px; */
   margin: 4px;
 }
 
 .controlPanel {
-  position:relative;
-  width: 600px;
+  position: relative;
+  /* width: 600px; */
   /* background-color: white; */
   /* box-shadow: 0 0 5px rgb(0 0 0 / 40%); */
   margin: 0 auto 20px auto;
@@ -215,7 +256,8 @@ body {
 
 
 .the-results {
-  display: flex;
+  flex-grow: 1;
+  display: block;
   max-width: 1000px;
   margin: 0 auto;
   /* background-color: white; */

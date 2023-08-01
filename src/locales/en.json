@@ -1,11 +1,11 @@
 {
-  "draught": "Draught: ",
+  "draught": "Select draught",
   "submit": "Submit",
   "chartYLabel": "Water Level",
   "chart": "Chart",
   "Calendrier": "Calendar",
   "invalidRangeMessage": "The range selected cannot be more than 6 days. It has been corrected automatically",
-  "boat-choice": "Boat destination:",
+  "boat-choice": "Select location:",
   "visitor-dock": "Visitor dock",
   "unknown_waterlevel": "Unknown water level required",
   "specific_waterlevel": "Specific water level",
@@ -20,8 +20,9 @@
   "calendar": "Calendar",
   "calendar-view-title": "Possible schedules for entering or leaving",
   "app-title": "Water level prediction - Rivière-du-Loup yacht club",
-  "member": "Member",
-  "visitor": "Visitor",
+  "member": "MEMBER",
+  "visitor": "VISITOR",
   "marina-layout": "View marina layout",
-  "specific-water-level": "Water level"
+  "specific-water-level": "Select water level",
+  "select-date": "Select date"
 }

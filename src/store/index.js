@@ -3,12 +3,16 @@ import Vue from "vue";
 
 const state = Vue.observable({
   //revoir: Sortir la map de l état
-  units:"meter",
+  units:"foot",
+  selectedDate:null,
 });
 
 const mutations = {
   updateSelectedUnits(units) {
     state.units = units;
+  },
+  updateSelectedDate(date) {
+    state.selectedDate = date;
   },
 };
 

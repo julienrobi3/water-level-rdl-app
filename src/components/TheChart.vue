@@ -27,7 +27,7 @@ export default {
       line,
       rect: null,
       width: 1000,
-      height: 450,
+      height: 550,
       margin: { top: 60, bottom: 40, left: 20, right: 110 },
       content: null,
       dates: null,
@@ -113,9 +113,9 @@ export default {
 
       // Max extent of the data
       this.extentX = d3.extent(this.data, (d) => d.date);
-      this.dateMinDisplayed = new Date(this.extentX[0]);
+      this.dateMinDisplayed = new Date(this.$store.state.selectedDate);
 
-      this.dateMaxDisplayed = new Date();
+      this.dateMaxDisplayed = new Date(this.$store.state.selectedDate);
       this.dateMaxDisplayed.setHours(
         this.dateMinDisplayed.getHours() + this.limitNbOfHours
       );
@@ -139,7 +139,7 @@ export default {
         .append("svg")
         .attr("class", "svg-content-responsive")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 1000 500");
+        .attr("viewBox", "0 0 1000 600");
 
       let defs = this.svg.append("defs")
 
@@ -623,48 +623,48 @@ export default {
 
 
     },
-    changeStartDate: function () {
-      let _this = this;
-      //let nbOfMilliSeconds = 86400000;
-      let diff =
-        this.startDisplayedDate.getTime() - this.dateMinDisplayed.getTime();
+    // changeStartDate: function () {
+    //   let _this = this;
+    //   //let nbOfMilliSeconds = 86400000;
+    //   let diff =
+    //     this.startDisplayedDate.getTime() - this.dateMinDisplayed.getTime();
 
-      let nbRep = 20;
-      if (Math.abs(diff) > 250000000) {
-        nbRep = 50;
-      }
+    //   let nbRep = 20;
+    //   if (Math.abs(diff) > 250000000) {
+    //     nbRep = 50;
+    //   }
 
-      let round = 0;
-      function transitionChart() {
-        modifyChart();
-        round++;
-        if (round < nbRep) {
-          setTimeout(transitionChart, 15);
-        }
-      }
-      transitionChart();
+    //   let round = 0;
+    //   function transitionChart() {
+    //     modifyChart();
+    //     round++;
+    //     if (round < nbRep) {
+    //       setTimeout(transitionChart, 15);
+    //     }
+    //   }
+    //   transitionChart();
 
-      function modifyChart() {
-        _this.dateMinDisplayed.setTime(
-          _this.dateMinDisplayed.getTime() + diff / nbRep
-        );
-        _this.dateMaxDisplayed.setTime(
-          _this.dateMaxDisplayed.getTime() + diff / nbRep
-        );
+    //   function modifyChart() {
+    //     _this.dateMinDisplayed.setTime(
+    //       _this.dateMinDisplayed.getTime() + diff / nbRep
+    //     );
+    //     _this.dateMaxDisplayed.setTime(
+    //       _this.dateMaxDisplayed.getTime() + diff / nbRep
+    //     );
 
-        _this.resetChart();
-      }
-    },
+    //     _this.resetChart();
+    //   }
+    // },
   },
   mounted() {
-    this.bus.$on("dateClicked", (date) => {
-      this.startDisplayedDate = date;
-      this.changeStartDate();
-    });
+    // this.bus.$on("dateClicked", (date) => {
+    //   this.startDisplayedDate = date;
+    //   this.changeStartDate();
+    // });
   },
   watch: {
-    "dataToDisplay.waterData.wlphilo": function () {
-      this.updateChart();
+    "dataToDisplay.waterData.wlphilo": function (newValue) {
+      this.updateChart()
     },
     "dataToDisplay.waterLevel": function () {
       this.updateChart();

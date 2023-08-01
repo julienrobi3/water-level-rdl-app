@@ -508,14 +508,14 @@ export default {
         .style("fill", "none")
         .style("pointer-events", "all")
         .attr("class", "chartRect");
-      // Création de l'intéraction drag
-      this.rect.call(
-        d3
-          .drag()
-          .on("start", this.dragStarted)
-          .on("drag", this.dragged)
-          .on("end", this.dragEnded)
-      );
+      // // Création de l'intéraction drag
+      // this.rect.call(
+      //   d3
+      //     .drag()
+      //     .on("start", this.dragStarted)
+      //     .on("drag", this.dragged)
+      //     .on("end", this.dragEnded)
+      // );
     },
     dragStarted: function () {
       if (event.type === "mousedown") {
@@ -687,12 +687,12 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  cursor: grab;
+  /* cursor: grab; */
 }
 
-.chartRect:active {
+/* .chartRect:active {
   cursor: grabbing;
-}
+} */
 .svg-content-responsive{
   max-height:500px
 }

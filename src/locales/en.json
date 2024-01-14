@@ -1,5 +1,5 @@
 {
-  "draught": "Select draught",
+  "draught": "Select draught:",
   "submit": "Submit",
   "chartYLabel": "Water Level",
   "chart": "Chart",
@@ -20,10 +20,11 @@
   "calendar": "Calendar",
   "calendar-view-title": "Possible schedules for entering or leaving",
   "app-title": "Water level prediction",
-  "member": "MEMBER",
-  "visitor": "VISITOR",
+  "member": "Member",
+  "visitor": "Visitor",
   "marina-layout": "View marina layout",
   "specific-water-level": "Select water level",
-  "select-date": "Select date",
-  "navigational-timetable": "Navigational timetable"
+  "select-date": "Select date:",
+  "navigational-timetable": "Navigation timetable",
+  "marina-name": "Rivière-du-Loup Yacht Club"
 }

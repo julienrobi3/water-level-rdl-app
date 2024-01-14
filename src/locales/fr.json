@@ -25,10 +25,11 @@
   "app-description-bullet-one": "Choisir une ou plusieurs date en cliquand sur le calendrier.",
   "app-description-bullet-two": "Indiquer le tirant d'eau de votre embarcation.",
   "app-description-bullet-three": "Choisir l'endroit d'arrivée ou de sortie.",
-  "member": "MEMBRE",
-  "visitor": "VISITEUR",
+  "member": "Membre",
+  "visitor": "Visiteur",
   "marina-layout": "Voir Marina",
   "specific-water-level": "Sélectionner niveau d'eau",
-  "select-date": "Selectionner la date",
-  "navigational-timetable": "Horaire de navigation"
+  "select-date": "Selectionner la date:",
+  "navigational-timetable": "Horaire de navigation",
+  "marina-name": "Marina Rivière-du-Loup"
 }

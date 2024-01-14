@@ -1,51 +1,27 @@
 <template>
   <div>
-    <div class="chartAndOptions">
-      <TheChart @colorBoxChanged="loadColorBoxes" @draggedDate="setActiveDot" id="waterLevelChart" class="svg-container"
-        :dataToDisplay="dataToDisplay" :range="range" :bus="bus"></TheChart>
-
-      <div class="dot-and-text-container">
-        <div class="dot-wrapper">
-          <div @click="dayMinusOne">
-            <img class="back-next-arrows" @mouseover="mouseOverBack" @mouseleave="mouseLeaveBack" :src="isBackHovered
-              ? require('@/assets/angle-left-solid-grey.svg')
-              : require('@/assets/angle-left-solid.svg')
-              " />
-          </div>
-
-          <!-- <div v-for="index in daysArray.length" :key="index" @click="logClick(index)" class="dot-date">
-          <div class="active-date" >
-            <div class="active-date-line">{{ getDay(daysArray[index - 1]) }}</div>
-            <div class="active-date-line">{{ getDate(daysArray[index - 1]) }}</div>
-          </div>
-        </div> -->
-          <div class="color-circle"></div>
-          <div @click="dayPlusOne">
-            <img class="back-next-arrows" @mouseover="mouseOverNext" @mouseleave="mouseLeaveNext" :src="isNextHovered
-              ? require('@/assets/angle-right-solid-grey.svg')
-              : require('@/assets/angle-right-solid.svg')
-              " />
-          </div>
-        </div>
-        <div v-if="$store.state.selectedDate != null" class="day-info-container">
-          <div>{{ getDay($store.state.selectedDate) }} {{ getDate($store.state.selectedDate) }}</div>
-        </div>
-
-      </div>
-
-    </div>
-    <!-- <div class="separator"></div> -->
+    
     <div class="calendar-section">
       <TheCalendarView :colorBoxes="colorBoxes" :range="range"></TheCalendarView>
     </div>
+    <div class="chartAndOptions">
+      <TheChart
+        @colorBoxChanged="loadColorBoxes"
+        id="waterLevelChart"
+        class="svg-container"
+        :dataToDisplay="dataToDisplay"
+        :range="range"
+        :bus="bus"
+      ></TheChart>
+    </div>
+    <!-- <div class="separator"></div> -->
   </div>
-</template> 
+</template>
 
 <script>
 import Vue from "vue";
 import TheCalendarView from "@/components/TheCalendarView.vue";
 import TheChart from "@/components/TheChart.vue";
-import { days, months } from "@/common/time-utils";
 export default {
   components: { TheCalendarView, TheChart },
   props: ["dataToDisplay", "range"],
@@ -63,25 +39,9 @@ export default {
   },
   computed: {
     // selectedDate: function(){
-
     // }
   },
   methods: {
-    dayPlusOne: function () {
-      // this.activeIndex += 1;
-      // let displayDate = new Date(this.$store.state.selectedDate)
-      // displayDate.setDate(displayDate.getDate() + 1);
-      // this.bus.$emit("dateClicked", displayDate);
-      this.$emit("dateChanged", 1)
-
-    },
-    dayMinusOne: function () {
-      // this.activeIndex -= 1;
-      // let displayDate = new Date(this.$store.state.selectedDate)
-      // displayDate.setDate(displayDate.getDate() - 1);
-      // this.bus.$emit("dateClicked", displayDate);
-      this.$emit("dateChanged", -1)
-    },
     mouseOverBack: function () {
       this.isBackHovered = true;
     },
@@ -94,58 +54,25 @@ export default {
     mouseLeaveNext: function () {
       this.isNextHovered = false;
     },
-    getDay: function (date) {
-      return days[this.$i18n.locale][date.getDay()];
-    },
-    getDate: function (date) {
-      let month = months[this.$i18n.locale][date.getMonth()];
-      let day = date.getDate();
-      return day + " " + month;
-    },
+
     loadColorBoxes: function (colorBoxes) {
       this.colorBoxes = colorBoxes;
     },
-    updateDots: function () {
-      this.activeIndex = 1;
-      let getDaysArray = function (start, end) {
-        let arr = [];
-        for (let dt = new Date(start); dt < end; dt.setDate(dt.getDate() + 1)) {
-          arr.push(new Date(dt));
-        }
-        return arr;
-      };
-      this.daysArray = getDaysArray(this.range[0], this.range[1]);
-    },
+    // updateDots: function () {
+    //   this.activeIndex = 1;
+    //   let getDaysArray = function (start, end) {
+    //     let arr = [];
+    //     for (let dt = new Date(start); dt < end; dt.setDate(dt.getDate() + 1)) {
+    //       arr.push(new Date(dt));
+    //     }
+    //     return arr;
+    //   };
+    //   this.daysArray = getDaysArray(this.range[0], this.range[1]);
+    // },
     logClick: function (index) {
       // A bus is created to emit an event to a child component.
       this.bus.$emit("dateClicked", this.daysArray[index - 1]);
       this.activeIndex = index;
-    },
-    setActiveDot: function (date) {
-      let _this = this;
-      let getClosestDate = function () {
-        let closest = { date: null, diff: null };
-        for (let i = 0; i < _this.daysArray.length; i++) {
-          if (closest.date === null) {
-            closest = {
-              date: _this.daysArray[i],
-              diff: Math.abs(_this.daysArray[i] - date),
-            };
-          } else if (Math.abs(_this.daysArray[i] - date) < closest.diff) {
-            closest = {
-              date: _this.daysArray[i],
-              diff: Math.abs(_this.daysArray[i] - date),
-            };
-          }
-        }
-        return closest;
-      };
-      let closestDate = getClosestDate();
-      for (let j = 0; j < this.daysArray.length; j++) {
-        if (this.daysArray[j] === closestDate.date) {
-          this.activeIndex = j + 1;
-        }
-      }
     },
   },
   watch: {
@@ -159,7 +86,7 @@ export default {
       ) {
         return;
       }
-      this.updateDots();
+      // this.updateDots();
     },
   },
 };
@@ -169,7 +96,6 @@ export default {
 .chartAndOptions {
   width: 95%;
   margin: 0 auto;
-
 }
 
 /* @media (max-width: 1000px) {
@@ -200,13 +126,6 @@ export default {
   background-color: black;
 }
 
-.dot-wrapper {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  width: 100%;
-}
-
 .dot-date {
   width: 50px;
   line-height: 90%;
@@ -234,7 +153,6 @@ export default {
 .back-next-arrows:hover {
   background-color: #07234a;
 }
-
 
 .greyed {
   cursor: auto;
@@ -267,7 +185,7 @@ export default {
 
 .calendar-section {
   max-width: 400px;
-  margin: 0 auto;
+  margin: 15px auto;
   font-size: 20px;
 }
 
@@ -286,7 +204,6 @@ export default {
 
   .calendar-section {
     max-width: 400px;
-    margin: 0 auto
   }
 }
 
@@ -296,14 +213,5 @@ export default {
   background-color: #07234a;
   width: 22px;
   height: 22px;
-}
-
-.day-info-container {
-  line-height: 15px;
-  font-size: 20px;
-  margin:3px;
-}
-.dot-and-text-container{
-  margin-bottom: 15px;
 }
 </style>

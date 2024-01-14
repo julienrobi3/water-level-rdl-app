@@ -16,23 +16,20 @@
         <div class="selector-specific-text">{{ $t("specific-water-level") }}</div>
         <div class="input-selector-specific-wl">
           <div class="input-number-container">
+            <div class="angle-button-container button-minus-left" @click="modifyWaterLevel(-1)">-</div>
             <input class="input-number" v-model.number="specificWaterLevel" type="number" v-on:input="emitConfig"
               onclick="this.select();" />
-            <div class="angle-buttons">
-              <div class="angle-button-container" @click="modifyWaterLevel(1)"><img class="angle-button"
-                  :src="require('@/assets/angle-up-solid.svg')" /></div>
-              <div class="angle-button-container" @click="modifyWaterLevel(-1)"><img class="angle-button"
-                  :src="require('@/assets/angle-down-solid.svg')" /></div>
-            </div>
+              
+            <div class="angle-button-container button-plus-right" @click="modifyWaterLevel(1)">+</div>
           </div>
 
-          <UnitsSelector class="draught-selector-children"></UnitsSelector>
+          <UnitsSelector></UnitsSelector>
         </div>
       </div>
       <div class="selector-specific-text"> {{ $t("select-date") }}</div>
       <div class="date-selector">
-        <v-date-picker v-show="windowWidth > 850" v-model="dateSelected" is-dark />
-        <v-date-picker v-show="windowWidth < 850" v-model="dateSelected" is-dark>
+        <v-date-picker v-show="windowWidth > 850" v-model="dateSelected"/>
+        <v-date-picker v-show="windowWidth < 850" v-model="dateSelected">
           <template v-slot="{ inputValue, inputEvents }">
             <input class="calendar-input border px-2 py-1 rounded" :value="inputValue" v-on="inputEvents" />
           </template>
@@ -48,17 +45,13 @@
         </div>
         <div class="input-selector-specific-wl">
           <div class="input-number-container">
+            <div class="angle-button-container button-minus-left" @click="modifyDraught(-1)">-</div>
             <input class="input-number" v-model.number="draught" type="number" v-on:input="emitConfig"
               onclick="this.select();" />
-            <div class="angle-buttons">
-              <div class="angle-button-container" @click="modifyDraught(1)"><img class="angle-button"
-                  :src="require('@/assets/angle-up-solid.svg')" /></div>
-              <div class="angle-button-container" @click="modifyDraught(-1)"><img class="angle-button"
-                  :src="require('@/assets/angle-down-solid.svg')" /></div>
-            </div>
+            <div class="angle-button-container button-plus-right" @click="modifyDraught(1)">+</div>
 
           </div>
-          <UnitsSelector class="draught-selector-children"></UnitsSelector>
+          <UnitsSelector></UnitsSelector>
         </div>
 
       </div>
@@ -85,8 +78,8 @@
       </div>
       <div class="selector-specific-text"> {{ $t("select-date") }}</div>
       <div class="date-selector">
-        <v-date-picker v-show="windowWidth > 850" v-model="dateSelected" is-dark />
-        <v-date-picker v-show="windowWidth < 850" v-model="dateSelected" is-dark>
+        <v-date-picker v-show="windowWidth > 850" v-model="dateSelected" />
+        <v-date-picker v-show="windowWidth < 850" v-model="dateSelected">
           <template v-slot="{ inputValue, inputEvents }">
             <input class="calendar-input border px-2 py-1 rounded" :value="inputValue" v-on="inputEvents" />
           </template>
@@ -94,6 +87,19 @@
       </div>
 
     </div>
+    <div class="dot-and-text-container">
+        <div class="dot-wrapper">
+          <div @click="dayMinusOne" class="greater-smaller-sign">
+            &#60;
+          </div>
+          <div v-if="$store.state.selectedDate != null" class="day-info-container">
+            <div>{{ getDay($store.state.selectedDate) }} {{ getDate($store.state.selectedDate) }}</div>
+          </div>
+          <div @click="dayPlusOne" class="greater-smaller-sign">
+            &#62;
+          </div>
+        </div>
+      </div>
 
 
 
@@ -102,7 +108,7 @@
 
 <script>
 import { conversionFunctions } from "@/common/units-utils";
-import { days } from "@/common/time-utils";
+import { days, months } from "@/common/time-utils";
 import {
   formatDateToDisplay,
   formatTimeToDisplay,
@@ -145,6 +151,23 @@ export default {
     };
   },
   methods: {
+    dayPlusOne: function () {
+
+      this.$emit("dateChanged", 1)
+
+    },
+    dayMinusOne: function () {
+
+      this.$emit("dateChanged", -1)
+    },
+    getDay: function (date) {
+      return days[this.$i18n.locale][date.getDay()];
+    },
+    getDate: function (date) {
+      let month = months[this.$i18n.locale][date.getMonth()];
+      let day = date.getDate();
+      return day + " " + month;
+    },
     calculateDiffDays: function (first, second) {
       const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
       return Math.round(Math.abs((first - second) / oneDay));
@@ -166,34 +189,7 @@ export default {
       this.emitConfig()
     },
 
-    // handleInput() {
-    //   this.$nextTick(() => {
-    //     let endDate;
-    //     if (!this.validRange) {
-    //       endDate = new Date();
-    //       endDate.setMonth(this.range.start.getMonth());
-    //       endDate.setDate(this.range.start.getDate() + 5);
-    //       this.range = {
-    //         start: this.range.start,
-    //         end: new Date(endDate),
-    //       };
-    //       this.invalidRange = true;
-    //     } else {
-    //       this.range = {
-    //         start: this.range.start,
-    //         end: this.range.end,
-    //       };
-    //       endDate = new Date(this.range.end);
-    //       this.invalidRange = false;
-    //     }
 
-    //     this.range.start.setHours(0, 0, 0, 0);
-    //     endDate.setDate(endDate.getDate() + 1);
-    //     endDate.setHours(0, 0, 0, 0);
-
-    //     this.trimmedRange = { start: this.range.start, end: endDate };
-    //   });
-    // },
   },
   mounted() {
     let _this = this;
@@ -252,13 +248,12 @@ export default {
 
 .draught-selector {
   display: block;
-  margin: 10px 20px 0px 20px;
+  /* margin: 10px 20px 0px 20px; */
 }
 
 .input-number-container {
   display: flex;
-  background-color: #495361;
-  border: 1px solid #71757d;
+  border: 1px solid #4FBCA2;
   border-radius: 4px;
   overflow: hidden;
   align-items: center;
@@ -315,13 +310,6 @@ export default {
   color: #1a4269 !important;
 }
 
-.draught-selector-children {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-}
-
 .input-number {
   font-size: 23px;
   width: 50px;
@@ -329,10 +317,16 @@ export default {
   margin: 0px 5px 0px 5px;
   background-color: transparent;
   /* border: 2px solid #72767e; */
-  border: none;
-  color: #00dffe;
+  border:none;
+  color: #16374A;
   font-weight: bold;
   text-align: center;
+}
+.button-minus-left{
+  border-right:1px solid #4FBCA2;
+}
+.button-plus-right{
+  border-left:1px solid #4FBCA2;
 }
 
 input[type="number"] {
@@ -375,11 +369,11 @@ input[type="number"] {
 
 
 .general-selection-button {
-  color: #bbbfc4;
   cursor: pointer;
-  background-color: #47566b;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.75);
+  /* box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.75); */
   font-weight: bold;
+  color: #4FBCA2;
+  /* border: 1px solid #4FBCA2; */
 }
 
 .typeOfUserSelection {
@@ -390,6 +384,7 @@ input[type="number"] {
 .general-button-container {
   overflow: hidden;
   border-radius: 8px;
+  border: 1px solid #4FBCA2;
   display: inline-flex;
   justify-content: center;
 }
@@ -402,9 +397,8 @@ input[type="number"] {
 }
 
 .activeUserTab {
-  background-color: #07234a;
-  color: white;
-  box-shadow: none;
+  background: #4FBCA2;
+  color: #16374A;
 }
 
 .control-pane-tab {
@@ -447,14 +441,14 @@ input[type="number"] {
 }
 
 .input-selector {
-  margin: 10px;
+  /* margin: 10px; */
 }
 
 .active-selection {
   /* padding: 0px 1px; */
   font-weight: bold;
-  background-color: #07234a;
-  color: white;
+  background-color: #4FBCA2;
+  color: #16374A;
   box-shadow: none;
 }
 
@@ -470,28 +464,29 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-.angle-button {
-  vertical-align: baseline;
-  cursor: pointer;
-}
-
-.angle-buttons {
-  display: block;
-  margin-right: 5px;
-}
-
 .angle-button-container {
-  width: 15px;
-  height: 15px;
+  cursor: pointer;
+  color:#16374A;
+  font-size: 23px;
+  font-weight:bold;
+  padding:0px 20px;
 }
 
 .selector-specific-text {
   font-size: large;
-  margin-top: 10px;
+  margin:10px 10px 3px 10px;
+  /* margin-top: 10px; */
+  color:#16374A;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 29px;
+  text-align: left;
+
 }
 
 .destination-button {
   padding: 5px;
+  width: 130px;
 }
 
 .location-info-button {
@@ -517,9 +512,43 @@ input[type=number] {
 }
 
 .calendar-input {
-  background-color: #07234a;
+  background-color: #16374A;
   color: white;
   font-size: 15px;
   text-align: center;
+}
+.dot-and-text-container{
+  margin: 5px;
+  color:#16374A
+}
+.greater-smaller-sign{
+  text-align:center;
+  font-weight:bold;
+  margin: 0px 10px;
+  font-size:25px;
+  cursor:pointer;
+  padding-top: 5px;
+}
+.dot-wrapper {
+  display: flex;  
+  flex-wrap: nowrap;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+}
+.day-info-container {
+  line-height: 15px;
+  font-size: 20px;
+  margin:3px;
+  font-weight:1000;
+  
+}
+.vc-pane-container{
+  background-color:#eef2f4 !important;
+  border-radius: 10px;
+  border: 1px solid #4FBCA2;
+}
+.vc-highlight{
+  background-color:#16374a !important;
 }
 </style>

@@ -29,6 +29,9 @@ export default {
   flex-wrap: wrap;
   cursor: pointer;
   width: 60px;
-  margin:20px
+  margin: 20px;
+}
+.switchText {
+  color: white;
 }
 </style>

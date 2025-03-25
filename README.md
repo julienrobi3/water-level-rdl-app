@@ -14,7 +14,7 @@ npm run serve
 ### Compiles and minifies for production and push to github pages
 ```
 $env:NODE_OPTIONS="--openssl-legacy-provider"
-git checkout --orphan gh-pages
+git checkout --orphan gh-pages-3
 npm run build
 git --work-tree dist add --all
 git --work-tree dist commit -m 'Deploy'

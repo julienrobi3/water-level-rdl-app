@@ -5,8 +5,9 @@
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Pour le partir en développement
 ```
+$env:NODE_OPTIONS="--openssl-legacy-provider"
 npm run serve
 ```
 
@@ -15,10 +16,3 @@ npm run serve
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

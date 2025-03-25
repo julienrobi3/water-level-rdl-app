@@ -9,22 +9,14 @@
     </div>
     <div class="the-app-core">
       <div class="controlAndChart">
-        <TheChartAndOptions
-          :dataToDisplay="dataToDisplay"
-          :range="range"
-          class="the-results"
-        >
+        <TheChartAndOptions :dataToDisplay="dataToDisplay" :range="range" class="the-results">
         </TheChartAndOptions>
 
-        <TheControlPane
-          @config="modifyData"
-          @waterLevelType="changeType"
-          @dateChanged="modifyDate"
-          class="controlPanel"
-        ></TheControlPane>
+        <TheControlPane @draught="updateData" @config="modifyData" @dateChanged="modifyDate" class="controlPanel">
+        </TheControlPane>
       </div>
     </div>
-    <div class="app-footer"></div>
+    <!-- <div class="app-footer"></div> -->
   </div>
 </template>
 
@@ -78,19 +70,24 @@ export default {
       for (let code of codes) {
         const result = await axios.get(
           "https://api.iwls.azure.cloud.dfo-mpo.gc.ca/api/v1/stations/5cebf1de3d0f4a073c4bbaf1/data?time-series-code=" +
-            code[0] +
-            "&from=" +
-            _this.getDateValuesFromDate(_this.range[0]) +
-            "&to=" +
-            _this.getDateValuesFromDate(_this.range[1]) +
-            ""
+          code[0] +
+          "&from=" +
+          _this.getDateValuesFromDate(_this.range[0]) +
+          "&to=" +
+          _this.getDateValuesFromDate(_this.range[1]) +
+          ""
         );
         if (result.status === 200) {
           this.waterLevelData[code[1]] = result.data;
         }
       }
     },
-    modifyData: function (config) {
+    updateData: function (draught) {
+      this.draught = draught;
+      this.checkType();
+      this.updateDataToDisplay()
+    },
+    modifyData: async function (config) {
       if (this.$store.state.selectedDate === config.selectedDate) {
         this.changedRange = false;
       } else {
@@ -102,8 +99,10 @@ export default {
       this.destination = config.destination;
       this.specificWaterLevel = config.specificWaterLevel;
       this.checkType();
+      await this.downloadData();
+      this.updateDataToDisplay()
     },
-    modifyDate: function (dateChange) {
+    modifyDate: async function (dateChange) {
       let selectedDate = new Date(this.$store.state.selectedDate);
       selectedDate.setDate(selectedDate.getDate() + dateChange);
       if (this.$store.state.selectedDate === selectedDate) {
@@ -114,18 +113,19 @@ export default {
       this.$store.mutations.updateSelectedDate(new Date(selectedDate));
       this.range = this.getRange(selectedDate);
       this.checkType();
+      await this.downloadData();
+      this.updateDataToDisplay()
     },
-    changeType: function (type) {
-      this.type = type;
-      this.checkType();
-    },
+    // changeType: function (type) {
+    //   this.type = type;
+    //   this.checkType();
+    // },
     checkType: function () {
-      if (this.type === "visitor") {
-        this.limitWaterLevel = this.draught + this.destination;
-      } else {
-        this.limitWaterLevel = this.specificWaterLevel;
-      }
-      this.downloadData();
+      // if (this.type === "visitor") {
+      this.limitWaterLevel = this.draught + this.destination;
+      // } else {
+      //   this.limitWaterLevel = this.specificWaterLevel;
+      // }
     },
 
     downloadData: async function () {
@@ -135,6 +135,9 @@ export default {
           this.changeDataUnits(this.$store.state.units);
         }
       }
+    },
+
+    updateDataToDisplay: function () {
 
       this.$set(this.dataToDisplay, "waterLevel", this.limitWaterLevel);
       this.$set(this.dataToDisplay, "waterData", {});
@@ -146,11 +149,11 @@ export default {
 
     getRange: function (selectedDate) {
       let startDate = new Date(selectedDate);
-      startDate.setDate(startDate.getDate() - 1);
+      startDate.setDate(startDate.getDate());
       startDate.setHours(0, 0, 0, 0);
 
       let endDate = new Date(selectedDate);
-      endDate.setDate(endDate.getDate() + 2);
+      endDate.setDate(endDate.getDate() + 1);
       endDate.setHours(0, 0, 0, 0);
 
       return [startDate, endDate];
@@ -176,6 +179,7 @@ export default {
 </script>
 
 <style>
+
 html,
 body {
   margin: 0px;
@@ -190,12 +194,12 @@ body {
     no-repeat padding-box; */
   background-color: #eef2f4;
   min-height: 100%;
-  color: #16374a;
+  color: #092230;
   margin: 0 auto;
 }
 
 .app-header {
-  background-color: #16374a;
+  background-color: #092230;
   /* height: 70px; */
   display: flex;
   justify-content: space-between;
@@ -206,6 +210,7 @@ body {
 .app-title-container {
   margin: 10px;
 }
+
 .app-title {
   font-weight: bold;
   font-size: 30px;
@@ -213,6 +218,7 @@ body {
   color: white;
   /* margin: 0px 20px; */
 }
+
 .marina-name {
   font-size: 20px;
   text-align: left;
@@ -264,18 +270,24 @@ body {
 
 .controlPanel {
   position: relative;
-  margin: 20px;
-  padding: 15px 15px 5px 15px;
-  margin: 10px;
+  /* padding: 15px 15px 5px 15px; */
+  margin: 10px 30px 10px 10px;
   border-radius: 10px;
   border: 4px solid #4fbca2;
   box-shadow: 0px 4px 4px 0px #00000040;
-  max-width:400px
+  max-width: 320px;
+  overflow: hidden;
+  background-color: #D6E1E7;
 }
 
 @media (max-width: 850px) {
   .controlPanel {
-    /* width: 100%; */
+    margin: 0px;
+    border-radius: 0px;
+    border: none;
+    box-shadow: none;
+    max-width: none;
+    
   }
 }
 

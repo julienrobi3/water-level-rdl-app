@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="typeOfUserSelection general-button-container">
+    <!-- <div class="typeOfUserSelection general-button-container">
       <div class="typeOfUserButton general-selection-button" @click="activeTab = 'member'"
         :class="activeTab === 'member' ? 'activeUserTab' : ''">
         {{
@@ -8,10 +8,10 @@
       <div class="typeOfUserButton general-selection-button" @click="activeTab = 'visitor'"
         :class="activeTab === 'visitor' ? 'activeUserTab' : ''">{{
           $t("visitor") }}</div>
-    </div>
+    </div> -->
 
 
-    <div class="control-pane-tab" v-show="activeTab === 'member'">
+    <!-- <div class="control-pane-tab" v-show="activeTab === 'member'">
       <div class="input-selector">
         <div class="selector-specific-text">{{ $t("specific-water-level") }}</div>
         <div class="input-selector-specific-wl">
@@ -19,7 +19,7 @@
             <div class="angle-button-container button-minus-left" @click="modifyWaterLevel(-1)">-</div>
             <input class="input-number" v-model.number="specificWaterLevel" type="number" v-on:input="emitConfig"
               onclick="this.select();" />
-              
+
             <div class="angle-button-container button-plus-right" @click="modifyWaterLevel(1)">+</div>
           </div>
 
@@ -28,78 +28,82 @@
       </div>
       <div class="selector-specific-text"> {{ $t("select-date") }}</div>
       <div class="date-selector">
-        <v-date-picker v-show="windowWidth > 850" v-model="dateSelected"/>
-        <v-date-picker v-show="windowWidth < 850" v-model="dateSelected">
-          <template v-slot="{ inputValue, inputEvents }">
-            <input class="calendar-input border px-2 py-1 rounded" :value="inputValue" v-on="inputEvents" />
-          </template>
-        </v-date-picker>
-      </div>
-    </div>
-
-    <div class="control-pane-tab" v-show="activeTab === 'visitor'">
-
-      <div class="draught-selector">
-        <div class="selector-specific-text">
-          {{ $t("draught") }}
-        </div>
-        <div class="input-selector-specific-wl">
-          <div class="input-number-container">
-            <div class="angle-button-container button-minus-left" @click="modifyDraught(-1)">-</div>
-            <input class="input-number" v-model.number="draught" type="number" v-on:input="emitConfig"
-              onclick="this.select();" />
-            <div class="angle-button-container button-plus-right" @click="modifyDraught(1)">+</div>
-
-          </div>
-          <UnitsSelector></UnitsSelector>
-        </div>
-
-      </div>
-      <div class="destination-selector">
-        <div class="selector-specific-text location-selector-text">
-          {{ $t("boat-choice") }}
-          <span class="location-info-button" @click="extandMarina = !extandMarina">i</span>
-        </div>
-        <div class="marina-image-container"><img id="marina-image" :src="require('@/assets/marina_rdl.png')"
-            v-if="extandMarina" @click="extandMarina = false" /></div>
-        <div class="general-button-container">
-          <div class="general-selection-button destination-button"
-            @click="function () { destinationSelected = marinaValue; emitConfig() }"
-            :class="destinationSelected === marinaValue ? 'active-selection' : ''">
-            Marina</div>
-          <div class="general-selection-button destination-button"
-            @click="function () { destinationSelected = visitorValue; emitConfig() }"
-            :class="destinationSelected === visitorValue ? 'active-selection' : ''">{{ $t("visitor-dock") }}</div>
-        </div>
-        <!-- <div class="marina-layout-option" @click="extandMarina = !extandMarina">
-          <div>{{ $t("marina-layout") }}</div>
-          <img id="marina-image-small" :src="require('@/assets/marina_rdl.png')" />
-        </div> -->
-      </div>
-      <div class="selector-specific-text"> {{ $t("select-date") }}</div>
-      <div class="date-selector">
         <v-date-picker v-show="windowWidth > 850" v-model="dateSelected" />
         <v-date-picker v-show="windowWidth < 850" v-model="dateSelected">
           <template v-slot="{ inputValue, inputEvents }">
             <input class="calendar-input border px-2 py-1 rounded" :value="inputValue" v-on="inputEvents" />
           </template>
-        </v-date-picker>
+</v-date-picker>
+</div>
+</div> -->
+
+    <!-- <div class="control-pane-tab" v-show="activeTab === 'visitor'"> -->
+    <img id="marina-image" :src="require('@/assets/marina_rdl.png')" />
+    <div class="draught-selector">
+      <div class="selector-specific-text">
+        {{ $t("draught") }}
+      </div>
+      <div class="input-selector-specific-wl">
+        <div class="input-number-container">
+          <div class="angle-button-container button-minus-left" @click="modifyDraught(-1)">-</div>
+          <input class="input-number" v-model.number="draught" type="number" v-on:input="emitConfig"
+            onclick="this.select();" />
+          <div class="angle-button-container button-plus-right" @click="modifyDraught(1)">+</div>
+
+        </div>
+        <UnitsSelector></UnitsSelector>
       </div>
 
     </div>
-    <div class="dot-and-text-container">
-        <div class="dot-wrapper">
-          <div @click="dayMinusOne" class="greater-smaller-sign">
-            &#60;
-          </div>
-          <div v-if="$store.state.selectedDate != null" class="day-info-container">
-            <div>{{ getDay($store.state.selectedDate) }} {{ getDate($store.state.selectedDate) }}</div>
-          </div>
-          <div @click="dayPlusOne" class="greater-smaller-sign">
-            &#62;
-          </div>
+    <div class="destination-selector">
+      <div class="selector-specific-text location-selector-text">
+        {{ $t("boat-choice") }}
+      </div>
+      <!-- <div class="marina-image-container"><img id="marina-image" :src="require('@/assets/marina_rdl.png')"
+          v-if="extandMarina" @click="extandMarina = false" /></div> -->
+      <div class="general-button-container">
+        <div class="general-selection-button destination-button"
+          @click="function () { destinationSelected = marinaValue; emitConfig() }"
+          :class="destinationSelected === marinaValue ? 'active-selection' : ''">
+          Marina</div>
+        <div class="general-selection-button destination-button"
+          @click="function () { destinationSelected = visitorValue; emitConfig() }"
+          :class="destinationSelected === visitorValue ? 'active-selection' : ''">{{ $t("visitor-dock") }}</div>
+      </div>
+      <!-- <div class="marina-layout-option" @click="extandMarina = !extandMarina">
+          <div>{{ $t("marina-layout") }}</div>
+          <img id="marina-image-small" :src="require('@/assets/marina_rdl.png')" />
+        </div> -->
+    </div>
+    <div class="selector-specific-text"> {{ $t("select-date") }}</div>
+    <div class="date-selector-and-buttons">
+      <div @click="dayMinusOne" class="greater-smaller-sign" v-show="windowWidth < 850">&#60;</div>
+      <div class="date-selector">
+        <v-date-picker v-show="windowWidth > 850" v-model="dateSelected" />
+        <v-date-picker v-show="windowWidth < 850" v-model="dateSelected">
+          <template v-slot="{ inputValue, inputEvents }">
+            <input class="calendar-input border px-2 py-1" :value="inputValue" v-on="inputEvents" />
+          </template>
+        </v-date-picker>
+      </div>
+      <div @click="dayPlusOne" class="greater-smaller-sign" v-show="windowWidth < 850">&#62;</div>
+    </div>
+
+
+    <!--  
+    <div class="dot-and-text-container" v-show="windowWidth < 850">
+      <div class="dot-wrapper">
+        <div @click="dayMinusOne" class="greater-smaller-sign">
+          &#60;
+        </div>
+        <div v-if="$store.state.selectedDate != null" class="day-info-container">
+          <div>{{ getDay($store.state.selectedDate) }} {{ getDate($store.state.selectedDate) }}</div>
+        </div>
+        <div @click="dayPlusOne" class="greater-smaller-sign">
+          &#62;
         </div>
       </div>
+    </div> -->
 
 
 
@@ -186,7 +190,7 @@ export default {
     },
     modifyDraught: function (modif) {
       this.draught = this.draught + modif
-      this.emitConfig()
+      this.$emit("draught", this.draught);
     },
 
 
@@ -231,6 +235,42 @@ export default {
 </script>
 
 <style>
+.vc-pane-container {
+  background-color: #eef2f4 !important;
+  border-radius: 10px;
+  border: 1px solid #092230;
+}
+
+.vc-highlight {
+  background-color: #092230 !important;
+}
+
+@media (min-width: 850px) {
+  .vc-day {
+    min-height: 20px !important;
+  }
+
+  .vc-day-content {
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+  }
+
+  .vc-highlight {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .vc-highlights {
+    overflow: visible !important;
+  }
+
+  .vc-header {
+    padding: 5px 10px 0 10px !important;
+  }
+}
+
+
 .vc-container {
   border: none !important;
 }
@@ -252,9 +292,10 @@ export default {
 }
 
 .input-number-container {
+  background-color: white;
   display: flex;
-  border: 1px solid #4FBCA2;
-  border-radius: 4px;
+  border: 1px solid #092230;
+  border-radius: 12px;
   overflow: hidden;
   align-items: center;
 }
@@ -311,22 +352,24 @@ export default {
 }
 
 .input-number {
-  font-size: 23px;
+  font-size: 20x;
   width: 50px;
   height: 35px;
   margin: 0px 5px 0px 5px;
   background-color: transparent;
   /* border: 2px solid #72767e; */
-  border:none;
-  color: #16374A;
+  border: none;
+  color: #092230;
   font-weight: bold;
   text-align: center;
 }
-.button-minus-left{
-  border-right:1px solid #4FBCA2;
+
+.button-minus-left {
+  border-right: 1px solid #092230;
 }
-.button-plus-right{
-  border-left:1px solid #4FBCA2;
+
+.button-plus-right {
+  border-left: 1px solid #092230;
 }
 
 input[type="number"] {
@@ -345,15 +388,16 @@ input[type="number"] {
 }
 
 #marina-image {
-  position: absolute;
-  top: 0px;
-  left: 4px;
-  width: 300px;
+  /* position: absolute; */
+  /* top: 0px;
+  left: 4px; */
+  width: 100%;
   border-color: white;
-  border-radius: 4px;
+  /* border-radius: 4px; */
   z-index: 1000;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.75);
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.75); */
   cursor: pointer;
+
 }
 
 @media (max-width: 850px) {
@@ -372,7 +416,7 @@ input[type="number"] {
   cursor: pointer;
   /* box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.75); */
   font-weight: bold;
-  color: #4FBCA2;
+  color: #092230;
   /* border: 1px solid #4FBCA2; */
 }
 
@@ -383,8 +427,8 @@ input[type="number"] {
 
 .general-button-container {
   overflow: hidden;
-  border-radius: 8px;
-  border: 1px solid #4FBCA2;
+  border-radius: 12px;
+  border: 1px solid #092230;
   display: inline-flex;
   justify-content: center;
 }
@@ -397,8 +441,8 @@ input[type="number"] {
 }
 
 .activeUserTab {
-  background: #4FBCA2;
-  color: #16374A;
+  background: #092230;
+  color: #092230;
 }
 
 .control-pane-tab {
@@ -417,7 +461,7 @@ input[type="number"] {
 
 .input-selector-specific-wl {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   margin: 0px 20px;
 }
@@ -447,8 +491,8 @@ input[type="number"] {
 .active-selection {
   /* padding: 0px 1px; */
   font-weight: bold;
-  background-color: #4FBCA2;
-  color: #16374A;
+  background-color: #092230;
+  color: white;
   box-shadow: none;
 }
 
@@ -466,21 +510,18 @@ input[type=number] {
 
 .angle-button-container {
   cursor: pointer;
-  color:#16374A;
-  font-size: 23px;
-  font-weight:bold;
-  padding:0px 20px;
+  color: #092230;
+  font-weight: bold;
+  padding: 0px 15px;
 }
 
 .selector-specific-text {
-  font-size: large;
-  margin:10px 10px 3px 10px;
-  /* margin-top: 10px; */
-  color:#16374A;
-  font-size: 20px;
+  margin: 5px 5px 1px 5px;
+  color: #092230;
+  font-size: 16px;
   font-weight: 700;
   line-height: 29px;
-  text-align: left;
+  text-align: center;
 
 }
 
@@ -489,66 +530,52 @@ input[type=number] {
   width: 130px;
 }
 
-.location-info-button {
-  position: absolute;
-  top: -5px;
-  font-size: 15px;
-  margin: 3px;
-  padding: 0px 6px;
-  /* border: 2px solid white; */
-  border-radius: 50%;
-  line-height: 1;
-  font-weight: bold;
-  cursor: pointer;
-  color: black;
-  background-color: white;
-  /* border-radius: 50%;  
-  border-color:white;
-  border-width: 1px;  */
-}
+
 
 .location-selector-text {
   position: relative;
 }
 
 .calendar-input {
-  background-color: #16374A;
+  background-color: #092230;
   color: white;
   font-size: 15px;
   text-align: center;
+  border-radius: 12px;
 }
-.dot-and-text-container{
+
+.dot-and-text-container {
   margin: 5px;
-  color:#16374A
+  color: #092230
 }
-.greater-smaller-sign{
-  text-align:center;
-  font-weight:bold;
+
+.greater-smaller-sign {
+  text-align: center;
+  font-weight: bold;
   margin: 0px 10px;
-  font-size:25px;
-  cursor:pointer;
+  font-size: 30px;
+  cursor: pointer;
   padding-top: 5px;
 }
-.dot-wrapper {
-  display: flex;  
+
+.date-selector-and-buttons {
+  display: flex;
   flex-wrap: nowrap;
   justify-content: center;
   width: 100%;
   align-items: center;
 }
+
 .day-info-container {
   line-height: 15px;
   font-size: 20px;
-  margin:3px;
-  font-weight:1000;
-  
+  margin: 3px;
+  font-weight: 1000;
+
 }
-.vc-pane-container{
-  background-color:#eef2f4 !important;
-  border-radius: 10px;
-  border: 1px solid #4FBCA2;
-}
-.vc-highlight{
-  background-color:#16374a !important;
+
+.date-selector {
+  padding-bottom: 4px;
+  ;
 }
 </style>

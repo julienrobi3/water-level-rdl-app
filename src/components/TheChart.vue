@@ -21,7 +21,7 @@ export default {
       });
     return {
       fontFamily: "Noto-Sans-JP, Avenir, Helvetica, Arial, sans-serif",
-      mainTextColor:"#16374A",
+      mainTextColor:"#092230",
       localeChosen: null,
       view: "chart",
       startDisplayedDate: null,

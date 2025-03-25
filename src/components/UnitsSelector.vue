@@ -37,7 +37,7 @@ export default {
   -webkit-flex-direction: column;
   flex-direction: column;
   margin-left: 8px;
-  color: #16374a;
+  color: #092230;
 }
 
 .unit-selector-children {
@@ -53,14 +53,14 @@ export default {
 }
 .custom-radio{
   padding:0px 5px;
-  height: 20px;
-  line-height: 20px;
+  height: 15px;
+  line-height: 15px;
   text-align: center;
 }
 
 .unit-choice{
 display:flex;
-margin:3px;
+margin:5px;
 }
 
 input[type="radio"] {
@@ -68,8 +68,8 @@ input[type="radio"] {
   /* Customize the color and other styles */
   border: 1px solid #2c3e50; /* Set the border color */
   color: #fff; /* Set the text color */
-  border-radius: 10px;
-  padding: 10px;
+  border-radius: 7px;
+  padding: 7px;
   cursor: pointer;
 }
 
@@ -78,7 +78,7 @@ input[type="radio"]:checked {
   appearance: none;
   background-color: #2c3e50; /* Set the background color when checked */
   border: 1px solid #2c3e50; /* Set the border color when checked */
-  border-radius: 10px;
-  padding: 10px;
+  /* border-radius: 10px; */
+  /* padding: 10px; */
 }
 </style>

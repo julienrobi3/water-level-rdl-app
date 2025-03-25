@@ -38,7 +38,7 @@
 </div> -->
 
     <!-- <div class="control-pane-tab" v-show="activeTab === 'visitor'"> -->
-    <img id="marina-image" :src="require('@/assets/marina_rdl.png')" />
+    <img id="marina-image" :src="require('@/assets/marina_rdl.webp')" />
     <div class="draught-selector">
       <div class="selector-specific-text">
         {{ $t("draught") }}

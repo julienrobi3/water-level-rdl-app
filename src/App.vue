@@ -179,7 +179,6 @@ export default {
 </script>
 
 <style>
-
 html,
 body {
   margin: 0px;
@@ -276,7 +275,7 @@ body {
   border: 4px solid #4fbca2;
   box-shadow: 0px 4px 4px 0px #00000040;
   max-width: 320px;
-  overflow: hidden;
+  /* overflow: hidden; */
   background-color: #D6E1E7;
 }
 
@@ -287,7 +286,7 @@ body {
     border: none;
     box-shadow: none;
     max-width: none;
-    
+
   }
 }
 

@@ -247,18 +247,18 @@ export default {
 
 @media (min-width: 850px) {
   .vc-day {
-    min-height: 20px !important;
+    min-height: 23px !important;
   }
 
   .vc-day-content {
-    width: 20px !important;
-    height: 20px !important;
-    line-height: 20px !important;
+    width: 23px !important;
+    height: 23px !important;
+    line-height: 23px !important;
   }
 
   .vc-highlight {
-    width: 22px !important;
-    height: 22px !important;
+    width: 25px !important;
+    height: 25px !important;
   }
 
   .vc-highlights {
@@ -387,6 +387,7 @@ input[type="number"] {
   justify-content: center;
 }
 
+
 #marina-image {
   /* position: absolute; */
   /* top: 0px;
@@ -397,6 +398,8 @@ input[type="number"] {
   z-index: 1000;
   /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.75); */
   cursor: pointer;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 
 }
 

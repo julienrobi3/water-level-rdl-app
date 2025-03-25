@@ -13,6 +13,7 @@ npm run serve
 
 ### Compiles and minifies for production
 ```
+$env:NODE_OPTIONS="--openssl-legacy-provider"
 npm run build
 ```
 

@@ -16,6 +16,14 @@
         </TheControlPane>
       </div>
     </div>
+    <div class="app-footer">
+      <div>{{ $t("data-provider") }}</div>
+      <div class="app-creator-container">
+        <div>{{ $t("app-creator") }}</div>
+        <a class="app-creator-website" href="https://canopeeconception.ca/" target="_blank">Canopée conception</a>
+        <img class="cc-logo" :src="require('@/assets/logo.svg')" />
+      </div>
+    </div>
     <!-- <div class="app-footer"></div> -->
   </div>
 </template>
@@ -206,6 +214,17 @@ body {
   line-height: 170%;
 }
 
+.app-footer {
+  /* background-color: #092230; */
+  /* height: 70px; */
+  /* display: flex; */
+  color: #092230;
+  font-size: 13px;
+  justify-content: space-between;
+  align-items: center;
+  /* line-height: 170%; */
+}
+
 .app-title-container {
   margin: 10px;
 }
@@ -316,8 +335,20 @@ body {
   }
 }
 
-.app-footer {
+/* .app-footer {
   height: 30px;
   background-color: transparent;
+} */
+.app-creator-container {
+  display: flex;
+  justify-content: center;
+  align-items:center;
+}
+.app-creator-website{
+  padding:0px 5px
+}
+
+.cc-logo {
+  height: 25px;
 }
 </style>

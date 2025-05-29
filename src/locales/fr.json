@@ -31,5 +31,7 @@
   "specific-water-level": "Sélectionner niveau d'eau",
   "select-date": "Selectionner la date:",
   "navigational-timetable": "Horaire de navigation",
-  "marina-name": "Marina Rivière-du-Loup"
+  "marina-name": "Marina Rivière-du-Loup",
+  "data-provider": "Source de données: Service hydrographique du Canada",
+  "app-creator": "Site web créé par "
 }

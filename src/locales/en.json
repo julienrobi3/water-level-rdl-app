@@ -26,5 +26,7 @@
   "specific-water-level": "Select water level",
   "select-date": "Select date:",
   "navigational-timetable": "Navigation timetable",
-  "marina-name": "Rivière-du-Loup Yacht Club"
+  "marina-name": "Rivière-du-Loup Yacht Club",
+  "data-provider": "Data source: Canadian Hydrographic Service",
+  "app-creator": "Website created by "
 }

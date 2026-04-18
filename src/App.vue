@@ -77,7 +77,7 @@ export default {
       let _this = this;
       for (let code of codes) {
         const result = await axios.get(
-          "https://api.iwls.azure.cloud.dfo-mpo.gc.ca/api/v1/stations/5cebf1de3d0f4a073c4bbaf1/data?time-series-code=" +
+          "https://api-iwls.dfo-mpo.gc.ca/api/v1/stations/5cebf1de3d0f4a073c4bbaf1/data?time-series-code=" +
           code[0] +
           "&from=" +
           _this.getDateValuesFromDate(_this.range[0]) +
